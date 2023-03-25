@@ -41,7 +41,12 @@ systems.initSys = function (player)
         shootgun = love.graphics.newImage("assets/shotgun.png"),
         rifle = love.graphics.newImage("assets/rifal.png"),
         pistolAmmo = love.graphics.newImage("assets/pistol-ammo.png"),
-    
+        player = {
+            idle = love.graphics.newImage("assets/Top_Down_Survivor/flashlight/idle/survivor-idle_flashlight_0.png"),
+        },
+        zombie = {
+            idle = love.graphics.newImage("assets/export/skeleton-attack_0.png"),
+        },
     }
 
 
@@ -64,12 +69,6 @@ systems.initSys = function (player)
 
 
 
-    for _ , roomId in pairs(systems.roomsIds) do 
-        systems.collistionManagers[roomId] = CollistionManager:new() 
-        systems.zombieManagers[roomId] = ZombieManager:new()
-    end
-    systems.roomManager = RoomManager:new(systems.gridSize)
-    systems.roomManager:setSystems(systems)
 
 
     systems.weaponManager = WeaponManager:new()
@@ -79,12 +78,16 @@ systems.initSys = function (player)
 
 
 
-
-
-
-    for _ , zombieManager in pairs(systems.zombieManagers) do
-        zombieManager:setPlayer(player)
+    for _ , roomId in pairs(systems.roomsIds) do 
+        systems.collistionManagers[roomId] = CollistionManager:new() 
+        systems.zombieManagers[roomId] = ZombieManager:new()
+        systems.zombieManagers[roomId]:setPlayer(player)
+        systems.zombieManagers[roomId]:setSystems(systems)
     end
+
+
+    systems.roomManager = RoomManager:new(systems.gridSize)
+    systems.roomManager:setSystems(systems)
 
 
 end

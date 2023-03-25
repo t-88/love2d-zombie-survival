@@ -9,13 +9,12 @@ function Player:new(obj)
     setmetatable(obj,self)
     self.__index = self
 
-    self.speed = 150
+    self.speed = 120
     self.aabb.x = 400
     self.aabb.y = 400
     self.rotation = 0
     self.bullets = {}
     self.health = 10
-
     
     return deepcopy(obj)
 end
@@ -92,7 +91,12 @@ function Player:update()
 end
 
 function Player:render()
-    love.graphics.rectangle("fill", self.aabb.x , self.aabb.y, self.aabb.w,self.aabb.h)
+-- love.graphics.rectangle("fill", self.aabb.x , self.aabb.y, self.aabb.w,self.aabb.h)
+
+    love.graphics.push()
+    love.graphics.translate(self.aabb.x, self.aabb.y)
+    love.graphics.draw(systems.sprites.player.idle,0,0,self.rotation,0.25,0.25,100,100)
+    love.graphics.pop()
 end
 
 

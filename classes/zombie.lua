@@ -19,6 +19,8 @@ function Zombie:new(obj)
     
     self.attackDelay = 0.1
     self.attackTimer = 0
+
+    self.systems = nil
     
     
     self.allStates = {
@@ -43,7 +45,7 @@ function Zombie:fellowTarget()
 
     self.vel = {x = 0 , y  = 0}
 end
-function Zombie:update() 
+function Zombie:update(systems) 
     if self.health <= 0 then
         self.dead = true
     end
@@ -84,12 +86,19 @@ function Zombie:stateRendering()
     end
 end
 
-function Zombie:render()
-    setColor(self.color[1],self.color[2],self.color[3],self.color[4])
-    love.graphics.rectangle("fill",self.aabb.x,self.aabb.y,self.aabb.w,self.aabb.h)
-    setColor(1,1,1,1)
+function Zombie:render(systems)
+    -- setColor(self.color[1],self.color[2],self.color[3],self.color[4])
+    -- love.graphics.rectangle("fill",self.aabb.x,self.aabb.y,self.aabb.w,self.aabb.h)
+    -- setColor(1,1,1,1)
 
-    self:stateRendering()
+
+    local rotation = math.atan2(systems.player.aabb.y - self.aabb.y,systems.player.aabb.x - self.aabb.x)
+    love.graphics.push()
+    love.graphics.translate(self.aabb.x, self.aabb.y)
+    love.graphics.draw(systems.sprites.zombie.idle,0,0,rotation,0.25,0.25,100,100)
+    love.graphics.pop()
+
+    -- self:stateRendering()
 end
 
 return Zombie

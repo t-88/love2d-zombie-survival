@@ -3,6 +3,7 @@ local Entity = require "./classes/entity"
 local Piston = require "./classes/piston"
 local Chest = require "./classes/chest"
 local Room = require "./classes/room"
+local Zombie = require "./classes/zombie"
 
 
 local SpawnRoom = Room:new()
@@ -26,6 +27,10 @@ end
 
 function SpawnRoom:init()
     local gz =  self.systems.gridSize
+
+    self.truck = {}
+    self.truck.sprite = love.graphics.newImage("assets/truck.png")
+    self.truck.aabb = {x = gz * 8, y = gz * 12}
 
     self.car = Entity:new()
     self.car.aabb.x = gz * 8 
@@ -55,26 +60,26 @@ function SpawnRoom:init()
     self.walls = {}
 
     self.wall.aabb = {x = gz * 2 , y = gz * 4 , w = gz * 3 , h = gz}
-    table.insert(self.walls,deepcopy(self.wall))
+    -- table.insert(self.walls,deepcopy(self.wall))
     self.wall.aabb = {x = gz * 0 , y = gz * 10 , w = gz * 4 , h = gz* 2}
-    table.insert(self.walls,deepcopy(self.wall))
+    -- table.insert(self.walls,deepcopy(self.wall))
     self.wall.aabb = {x = gz * 18 , y = gz * 8 , w = gz * 2 , h = gz* 1}
-    table.insert(self.walls,deepcopy(self.wall))
+    -- table.insert(self.walls,deepcopy(self.wall))
     self.wall.aabb = {x = gz * 19 , y = gz * 9 , w = gz * 2 , h = gz* 1}
-    table.insert(self.walls,deepcopy(self.wall))
+    -- table.insert(self.walls,deepcopy(self.wall))
     self.wall.aabb = {x = gz * (self.systems.widthGrid - 1) , y = gz * (self.systems.heightGrid - 2) , w = gz * 1 , h = gz* 2}
-    table.insert(self.walls,deepcopy(self.wall))
+    -- table.insert(self.walls,deepcopy(self.wall))
     self.wall.aabb = {x = gz * (self.systems.widthGrid - 2) , y = gz * (self.systems.heightGrid - 1) , w = gz * 1 , h = gz* 1}
-    table.insert(self.walls,deepcopy(self.wall))
+    -- table.insert(self.walls,deepcopy(self.wall))
 
 
     
 
 
-    self.systems.cameraManager.cameras[self.id]:addEntity(self.car)
+    -- self.systems.cameraManager.cameras[self.id]:addEntity(self.car)
     self.systems.collistionManagers[self.id]:addCollistionWithStatic(self.car,self.systems.player,function()   end)
 
-    self.systems.cameraManager.cameras[self.id]:addEntity(self.Mychest)
+    -- self.systems.cameraManager.cameras[self.id]:addEntity(self.Mychest)
 
 
     for _ , wall in pairs(self.walls) do 
@@ -82,6 +87,9 @@ function SpawnRoom:init()
         self.systems.collistionManagers[self.id]:addCollistionWithStatic(wall,self.systems.player,function()  end)
     end
 
+
+    local zombie = Zombie:new()
+    self.systems.zombieManagers[self.systems.currRoom]:addZombie(zombie)
 end
 
 
@@ -114,7 +122,12 @@ end
 function SpawnRoom:render()
     -- drawRect("fill",self.car.aabb.x,self.car.aabb.y,self.car.aabb.w,self.car.aabb.h)    
     -- self.camera:render(self.systems.player)
-    self.Mychest:render()
+    -- self.Mychest:render()
+    love.graphics.push()
+    love.graphics.translate(self.truck.aabb.x,self.truck.aabb.y)
+    love.graphics.scale(1.2,1.2)
+    love.graphics.draw(self.truck.sprite)
+    love.graphics.pop()
 end
 
 

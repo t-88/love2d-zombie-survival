@@ -6,6 +6,7 @@ local Shootgun =require "./classes/shootgun"
 local Rifle = require "./classes/rifle"
 
 local systems = require "systems"
+local maps = require "maps"
 
 
 local player
@@ -56,10 +57,14 @@ local lightShaderText = [[
 
 
 
+local background 
+local truck
+
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
     player = Player:new()
     systems.initSys(player)
+    maps.init()
     -- roomManager = RoomManager:new()
 
 
@@ -71,6 +76,12 @@ function love.load()
     systems.weaponManager:addWeapon(shootgun)
 
     lightShader = love.graphics.newShader(lightShaderText)
+
+
+
+    background = love.graphics.newImage("assets/map_bg.png")
+
+
 end
 
 function love.update()
@@ -79,6 +90,7 @@ function love.update()
     -- roomManager:update()
     player:update()
     systems.update()
+
 
 end
 
@@ -90,15 +102,15 @@ end
 
 function love.draw()
     local count = 0 
-
-    love.graphics.setShader(lightShader)
+    love.graphics.scale(1,1)
+    -- love.graphics.setShader(lightShader)
         lightShader:send("screen",{
             love.graphics.getWidth(),
             love.graphics.getHeight()
         })
         lightShader:send("lightCount",1 + #systems.bulletManager.bullets)
         addLightSource(count,
-                     {x = systems.player.aabb.x + systems.player.aabb.w / 2,y = systems.player.aabb.y + systems.player.aabb.h / 2},
+                     {x = systems.player.aabb.x,y = systems.player.aabb.y},
                      {1,1,1},
                      55
                     )
@@ -113,12 +125,20 @@ function love.draw()
            )
             count = count + 1
         end
+        
+        for _ , element in pairs(maps[systems.roomsIds[1]]) do
+            love.graphics.draw(element.sprite,element.x,element.y,element.rotation,element.scale,element.scale)
+        end
+
+        print(systems.mouse.aabb.x,systems.mouse.aabb.y)
+        -- love.graphics.draw(maps.sprites.wall1,systems.mouse.aabb.x,systems.mouse.aabb.y,3.14/2,3.5,3.5)
+
 
 
         systems.render()
-    love.graphics.setShader()
+        love.graphics.setShader()
+        systems.renderUI()
     
-    systems.renderUI()
 
 
 
