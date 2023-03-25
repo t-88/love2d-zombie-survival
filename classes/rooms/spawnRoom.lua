@@ -77,15 +77,15 @@ function SpawnRoom:init()
 
 
     -- self.systems.cameraManager.cameras[self.id]:addEntity(self.car)
-    self.systems.collistionManagers[self.id]:addCollistionWithStatic(self.car,self.systems.player,function()   end)
+    -- self.systems.collistionManagers[self.id]:addCollistionWithStatic(self.car,self.systems.player,function()   end)
 
     -- self.systems.cameraManager.cameras[self.id]:addEntity(self.Mychest)
 
 
-    for _ , wall in pairs(self.walls) do 
-        self.systems.cameraManager.cameras[self.id]:addEntity(wall)
-        self.systems.collistionManagers[self.id]:addCollistionWithStatic(wall,self.systems.player,function()  end)
-    end
+    -- for _ , wall in pairs(self.walls) do 
+        -- self.systems.cameraManager.cameras[self.id]:addEntity(wall)
+        -- self.systems.collistionManagers[self.id]:addCollistionWithStatic(wall,self.systems.player,function()  end)
+-- end
 
 
     local zombie = Zombie:new()
@@ -114,7 +114,7 @@ function SpawnRoom:checkBounderies(player)
 end
 
 function SpawnRoom:update()
-    self:checkBounderies()
+    -- self:checkBounderies()
     self.Mychest:update()
     -- self.camera:update(self.systems.player)
 end
@@ -123,11 +123,11 @@ function SpawnRoom:render()
     -- drawRect("fill",self.car.aabb.x,self.car.aabb.y,self.car.aabb.w,self.car.aabb.h)    
     -- self.camera:render(self.systems.player)
     -- self.Mychest:render()
-    love.graphics.push()
-    love.graphics.translate(self.truck.aabb.x,self.truck.aabb.y)
-    love.graphics.scale(1.2,1.2)
-    love.graphics.draw(self.truck.sprite)
-    love.graphics.pop()
+    -- love.graphics.push()
+    -- love.graphics.translate(self.truck.aabb.x,self.truck.aabb.y)
+    -- love.graphics.scale(1.2,1.2)
+    -- love.graphics.draw(self.truck.sprite)
+    -- love.graphics.pop()
 end
 
 

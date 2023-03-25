@@ -8,34 +8,35 @@ function CameraManager:new(systems,obj)
     self.__index = self
 
 
-    self.spawnCamera = Camera:new()
-    self.spawnCamera.smallRect = {x = systems.gridSize * 4,y = systems.gridSize * 4 , w = systems.gridSize * 14 , h = systems.gridSize * 10}
-    self.spawnCamera.fixed = true
+    self.spawnCamera = Camera:new(systems.bounderies)
+    self.spawnCamera:setSystems(systems)
+    self.spawnCamera.smallRect = {x = systems.gridSize * 5,y = systems.gridSize * 4 , w = systems.gridSize * 13 , h = systems.gridSize * 10}
+    self.spawnCamera.fixed = false
     self.spawnCamera.color = {1,0,0,1}
 
     self.spawnCamera.startShake = true
 
-    self.car1Camera = Camera:new()
-    self.car1Camera.smallRect = {x = systems.gridSize * 4,y = systems.gridSize * 4 , w = systems.gridSize * 14 , h = systems.gridSize * 10}
-    self.car1Camera.fixed = true
-    self.car1Camera.color = {0,1,0,1}
+    -- self.car1Camera = Camera:new()
+    -- self.car1Camera.smallRect = {x = systems.gridSize * 4,y = systems.gridSize * 4 , w = systems.gridSize * 14 , h = systems.gridSize * 10}
+    -- self.car1Camera.fixed = false
+    -- self.car1Camera.color = {0,1,0,1}
 
 
 
-    self.houseCamera = Camera:new()
-    self.houseCamera.smallRect = {x = systems.gridSize * 4,y = systems.gridSize * 4 , w = systems.gridSize * 14 , h = systems.gridSize * 10}
-    self.houseCamera.fixed = true
-    self.houseCamera.color = {0,0,1,1}
+    -- self.houseCamera = Camera:new()
+    -- self.houseCamera.smallRect = {x = systems.gridSize * 4,y = systems.gridSize * 4 , w = systems.gridSize * 14 , h = systems.gridSize * 10}
+    -- self.houseCamera.fixed = true
+    -- self.houseCamera.color = {0,0,1,1}
 
-    self.dangerCamera = Camera:new()
-    self.dangerCamera.smallRect = {x = systems.gridSize * 4,y = systems.gridSize * 4 , w = systems.gridSize * 14 , h = systems.gridSize * 10}
-    self.dangerCamera.fixed = true
-    self.dangerCamera.color = {1,0,1,1}
+    -- self.dangerCamera = Camera:new()
+    -- self.dangerCamera.smallRect = {x = systems.gridSize * 4,y = systems.gridSize * 4 , w = systems.gridSize * 14 , h = systems.gridSize * 10}
+    -- self.dangerCamera.fixed = true
+    -- self.dangerCamera.color = {1,0,1,1}
 
-    self.chestCamera = Camera:new()
-    self.chestCamera.smallRect = {x = systems.gridSize * 4,y = systems.gridSize * 4 , w = systems.gridSize * 14 , h = systems.gridSize * 10}
-    self.chestCamera.fixed = true
-    self.chestCamera.color = {1,1,1,1}
+    -- self.chestCamera = Camera:new()
+    -- self.chestCamera.smallRect = {x = systems.gridSize * 4,y = systems.gridSize * 4 , w = systems.gridSize * 14 , h = systems.gridSize * 10}
+    -- self.chestCamera.fixed = true
+    -- self.chestCamera.color = {1,1,1,1}
 
     self.cameras = {
         spawn = self.spawnCamera,

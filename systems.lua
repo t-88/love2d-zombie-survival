@@ -32,8 +32,15 @@ systems.initSys = function (player)
     love.window.setMode(systems.width, systems.height)
 
     systems.player = player
-    player.aabb.x = systems.gridSize * systems.widthGrid / 2
-    player.aabb.y = systems.gridSize * systems.heightGrid / 2
+
+    systems.scale = 2
+    systems.bounderies = {
+        bottom = 1050,
+        top = 175,
+        left = 175,
+        right = 1400,
+    }
+    systems.offset = {x = 0 , y = 0}
 
 
     systems.sprites = {
@@ -42,11 +49,13 @@ systems.initSys = function (player)
         rifle = love.graphics.newImage("assets/rifal.png"),
         pistolAmmo = love.graphics.newImage("assets/pistol-ammo.png"),
         player = {
-            idle = love.graphics.newImage("assets/Top_Down_Survivor/flashlight/idle/survivor-idle_flashlight_0.png"),
+            idle = love.graphics.newImage("assets/player/player_walkready3.png"),
         },
-        zombie = {
-            idle = love.graphics.newImage("assets/export/skeleton-attack_0.png"),
-        },
+        -- zombie = {
+            -- idle = love.graphics.newImage("assets/enemy/enemy.png"),
+        -- },
+        background = love.graphics.newImage("assets/map_bg.png"),
+        zombie = love.graphics.newImage("assets/enemy/enemy.png"),
     }
 
 
@@ -104,11 +113,11 @@ systems.update = function()
     systems.cameraManager:update(systems.currRoom)
 end
 systems.render = function()
-    systems.zombieManagers[systems.currRoom]:render()
     systems.crateManager:render()
     systems.bulletManager:render()
     systems.roomManager:render(systems.currRoom)
     systems.cameraManager:render(systems.currRoom)
+    -- systems.zombieManagers[systems.currRoom]:render()
 
 end
 

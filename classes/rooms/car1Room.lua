@@ -16,7 +16,7 @@ function Car1Room:new(gridSize,obj)
 end
 function Car1Room:checkBounderies() 
     if self.systems.player.aabb.x < - 10 then
-        self.systems.currRoom = "spawn"
+    self.systems.currRoom = "spawn"
         self.systems.player.aabb.x = self.systems.width -  10
     end
 end

@@ -9,7 +9,7 @@ function Player:new(obj)
     setmetatable(obj,self)
     self.__index = self
 
-    self.speed = 120
+    self.speed = 200
     self.aabb.x = 400
     self.aabb.y = 400
     self.rotation = 0
@@ -41,7 +41,7 @@ end
 
 function Player:shoot(bullet)
     for _ , zombie in pairs(systems.zombieManagers[systems.currRoom].zombies) do 
-        systems.collistionManager:addCollistionAABB(bullet,zombie,function(bullet , zombie)  self:onBulletHitZombie(bullet , zombie) end) 
+        systems.collistionManagers[systems.currRoom]:addCollistionAABB(bullet,zombie,function(bullet , zombie)  self:onBulletHitZombie(bullet , zombie) end) 
     end
 
     for _ , wall in pairs(systems.roomManager.rooms[systems.currRoom].walls) do 
@@ -72,8 +72,8 @@ function Player:input()
         self.vel.y = self.vel.y / mag  * self.speed
     end
 
-    local mouseX , mouseY = love.mouse.getPosition()
-    self.rotation = math.atan2(mouseY - self.aabb.y,mouseX - self.aabb.x)
+    local mouseX , mouseY = systems.mouse.aabb.x  ,systems.mouse.aabb.y
+    self.rotation = math.atan2(mouseY - self.aabb.y - systems.offset.y,mouseX - self.aabb.x - systems.offset.x)
 
 end
 
@@ -91,11 +91,11 @@ function Player:update()
 end
 
 function Player:render()
--- love.graphics.rectangle("fill", self.aabb.x , self.aabb.y, self.aabb.w,self.aabb.h)
+love.graphics.rectangle("fill", self.aabb.x , self.aabb.y, self.aabb.w,self.aabb.h)
 
     love.graphics.push()
-    love.graphics.translate(self.aabb.x, self.aabb.y)
-    love.graphics.draw(systems.sprites.player.idle,0,0,self.rotation,0.25,0.25,100,100)
+    love.graphics.translate(self.aabb.x + 10, self.aabb.y + 10)
+    love.graphics.draw(systems.sprites.player.idle,0,0,self.rotation + 3.14 / 2,3 ,3 ,14,20)
     love.graphics.pop()
 end
 
