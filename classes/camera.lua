@@ -19,7 +19,7 @@ function Camera:new(bounderies,obj)
     self.bounderies = bounderies
     
     self.sprites = {}
-
+    self.background = nil
     return deepcopy(obj)
 end
 
@@ -81,33 +81,36 @@ function Camera:update(target)
     self.systems.offset.x = self.offset.x
     self.systems.offset.y = self.offset.y
 
+
+
+    for i = #self.sprites , 1 , -1  do
+        if self.sprites[i].dead then
+            table.remove(self.sprites,i)
+        end
+    end
+
 end
 
 
-function Camera:render(target)
 
+function Camera:render(target)
 
     
 
     love.graphics.push()
     love.graphics.translate(self.offset.x,self.offset.y)
 
-    for _ , entity in pairs(self.entities) do 
-        entity:render()
-    end
 
-    for _ , sprite in pairs(self.sprites) do
-        love.graphics.draw(self.systems.sprites[sprite.sprite],sprite.aabb.x,sprite.aabb.y,sprite.rotation,sprite.scale,sprite.scale)
-    end
 
+    love.graphics.draw(self.systems.sprites[self.background.spriteName],self.background.aabb.x,self.background.aabb.y,self.background.rotation,self.background.scale,self.background.scale)
     target:render()
+    for _ , sprite in pairs(self.sprites) do
+        love.graphics.draw(self.systems.sprites[sprite.spriteName],sprite.aabb.x + sprite.offset.x,sprite.aabb.y  + sprite.offset.y,sprite.rotation,sprite.scale,sprite.scale,sprite.origin.x,sprite.origin.y)
+    end
+
 
     love.graphics.pop()
 
-
-    setColor(self.color[1],self.color[2],self.color[3],self.color[4])
-    drawRect('line',self.smallRect.x,self.smallRect.y,self.smallRect.w,self.smallRect.h)
-    setColor(1,1,1,1)
 
     
 end

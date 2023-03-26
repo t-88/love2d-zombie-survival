@@ -1,11 +1,18 @@
 local utils = require "utils" 
 local CollistionManager = require "./classes/collistionManager" 
 local ZombieManager = require "./classes/zombieManager" 
+local Zombie = require "./classes/zombie"
 local CrateManager = require "./classes/crateManager"
 local WeaponManager = require "./classes/weaponManager"
 local BulletManager = require "./classes/bulletManager"
 local RoomManager = require "./classes/roomManager"
 local CameraManager = require "./classes/cameraManager"
+local UiManager = require "./classes/ui/uiManager"
+
+
+local Rifle = require "./classes/rifle"
+local Pistol = require "./classes/piston"
+local Shootgun = require "./classes/shootgun"
 
 
 local systems = {}
@@ -17,10 +24,15 @@ systems.weaponManager = {}
 systems.bulletManager = {}
 systems.roomManager = {}
 systems.cameraManager = {}
+systems.uiManager = {}
 systems.mouse = {aabb = {x = 0 , y = 0 ,w = 5 , h = 5}} 
 systems.sprites = {} 
+systems.zombieSpawnDelay = 1000
+systems.zombieSpawnTimer = 1000
 
 
+systems.maxZombieCount = 20
+systems.killedCount = 0
 
 
 systems.initSys = function (player)
@@ -30,6 +42,41 @@ systems.initSys = function (player)
     systems.width  = systems.widthGrid * systems.gridSize
     systems.height  = systems.heightGrid * systems.gridSize
     love.window.setMode(systems.width, systems.height)
+
+
+    systems.items = {
+        {
+            spriteID = "rifle",
+            onSelecte = function() 
+                if #systems.weaponManager.weapons < 2 then
+                    print('asdsd')
+                    table.insert(systems.weaponManager.weapons,Rifle:new())
+                    return true
+                end
+                return false
+            end
+        },
+        {
+            spriteID = "pistol",
+            onSelecte = function() 
+                if #systems.weaponManager.weapons < 2 then
+                    table.insert(systems.weaponManager.weapons,Pistol:new())
+                    return true
+                end
+                return false
+            end
+        },
+        {
+            spriteID = "shootgun",
+            onSelecte = function() 
+                if #systems.weaponManager.weapons < 2 then
+                    table.insert(systems.weaponManager.weapons,Shootgun:new())
+                    return true
+                end
+                return false
+            end
+        },
+    }
 
     systems.player = player
 
@@ -41,6 +88,9 @@ systems.initSys = function (player)
         right = 1400,
     }
     systems.offset = {x = 0 , y = 0}
+
+
+
 
 
     systems.sprites = {
@@ -56,6 +106,9 @@ systems.initSys = function (player)
         -- },
         background = love.graphics.newImage("assets/map_bg.png"),
         zombie = love.graphics.newImage("assets/enemy/enemy.png"),
+        bulletDefault =  love.graphics.newImage("assets/bullet-default.png"),
+        crate =  love.graphics.newImage("assets/crate.png"),
+        crateOutlined =  love.graphics.newImage("assets/crate-outlined.png"),
     }
 
 
@@ -98,6 +151,12 @@ systems.initSys = function (player)
     systems.roomManager = RoomManager:new(systems.gridSize)
     systems.roomManager:setSystems(systems)
 
+    systems.bulletManager:setSystems(systems)
+    systems.collistionManagers[systems.currRoom]:setSystems(systems)
+    systems.crateManager:setSystems(systems)
+    systems.uiManager = UiManager:new()
+    systems.uiManager:setSystems(systems)
+
 
 end
 
@@ -111,13 +170,44 @@ systems.update = function()
     systems.bulletManager:update()
     systems.roomManager:update(systems.currRoom)
     systems.cameraManager:update(systems.currRoom)
+
+
+
+
+    systems.zombieSpawnTimer =  systems.zombieSpawnTimer - love.timer.getDelta() 
+    if systems.zombieSpawnTimer < 0 and #systems.zombieManagers[systems.currRoom].zombies < systems.maxZombieCount then 
+        systems.zombieSpawnTimer = systems.zombieSpawnDelay
+
+        local zombie = Zombie:new()
+
+        if love.math.random(0,1) == 0 then
+            zombie.aabb.x = love.math.random(-400,systems.width + 400) - systems.offset.x 
+            zombie.aabb.y = love.math.random(0,1) * systems.height - systems.offset.y 
+        else 
+            zombie.aabb.x = love.math.random(0,1) * systems.width - systems.offset.x 
+            zombie.aabb.y = love.math.random(-400,systems.height + 400) - systems.offset.y 
+        end
+
+        systems.zombieManagers[systems.currRoom]:addZombie(zombie)
+        systems.cameraManager.cameras[systems.currRoom]:addSprite(zombie)
+    
+    end
+
+    systems.uiManager:update()
+
 end
 systems.render = function()
-    systems.crateManager:render()
-    systems.bulletManager:render()
     systems.roomManager:render(systems.currRoom)
     systems.cameraManager:render(systems.currRoom)
-    -- systems.zombieManagers[systems.currRoom]:render()
+
+    systems.bulletManager:render()
+    systems.crateManager:render()
+
+
+
+    systems.zombieManagers[systems.currRoom]:render()
+
+    systems.uiManager:render(systems)
 
 end
 
@@ -136,7 +226,6 @@ end
 
 systems.renderUI = function()
     systems.weaponManager:render()
-
 end
 
 return systems

@@ -10,6 +10,8 @@ function Weapon:new(obj)
     
     self.damage = 10
     self.ammo = 10
+    self.currAmmo = 10
+    self.maxCurrAmmo = 10
     
     self.useDelay = 1
     self.useTimer = 0

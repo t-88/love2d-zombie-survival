@@ -9,13 +9,25 @@ function Player:new(obj)
     setmetatable(obj,self)
     self.__index = self
 
-    self.speed = 200
+    self.speed = 400
     self.aabb.x = 400
     self.aabb.y = 400
     self.rotation = 0
     self.bullets = {}
     self.health = 10
+    self.isInCrate = false
+
+
+    self.shootEffect = {
+        timer = 0,
+        intensity = 0,
+        x = 0,
+        y = 0,
+        color = {1,1,1},
+        alive = 0,
+    }
     
+    self.raduis = 20
     return deepcopy(obj)
 end
 
@@ -38,19 +50,34 @@ function Player:onBulletHitZombie(bullet , zombie)
     bullet.dead = true
     print('zombie health:',zombie.health, 'bullet damage',bullet:getDamage())
 end
+function Player:addShootEffect(shootEffect)
+    self.shootEffect.timer = shootEffect.timer
+    self.shootEffect.intensity = shootEffect.intensity
+    self.shootEffect.x = shootEffect.x
+    self.shootEffect.y = shootEffect.y
+    self.shootEffect.color = shootEffect.color
+    self.shootEffect.alive = 1 
+    
+end
 
 function Player:shoot(bullet)
+    if self.isInCrate then return end
     for _ , zombie in pairs(systems.zombieManagers[systems.currRoom].zombies) do 
-        systems.collistionManagers[systems.currRoom]:addCollistionAABB(bullet,zombie,function(bullet , zombie)  self:onBulletHitZombie(bullet , zombie) end) 
+        systems.collistionManagers[systems.currRoom]:addCircleCollistion(
+        bullet,
+        zombie,
+        function(bullet , zombie)  self:onBulletHitZombie(bullet , zombie) end,
+        nil,
+        0.3
+    ) 
     end
 
     for _ , wall in pairs(systems.roomManager.rooms[systems.currRoom].walls) do 
         systems.collistionManagers[systems.currRoom]:addCollistionAABB(bullet,wall,function(bullet , wall)  bullet.dead = true end) 
     end
 
-
     systems.cameraManager.cameras[systems.currRoom]:shake(systems.weaponManager.weapons[1].shakeVel)
-systems.bulletManager:addBullet(bullet)
+    systems.bulletManager:addBullet(bullet)
 end
 
 function Player:input()
@@ -85,18 +112,37 @@ function Player:move()
 
     self.vel = {x = 0 , y = 0}
 end
+
+function Player:updateShootEffect()
+    if self.shootEffect.alive == 0 then return end
+    self.shootEffect.timer = self.shootEffect.timer - love.timer.getDelta()
+    if self.shootEffect.timer < 0 then
+        self.shootEffect.alive = 0
+    end
+    
+end
+
 function Player:update()
     self:input()
     self:move()
+    self:updateShootEffect()
 end
 
 function Player:render()
-love.graphics.rectangle("fill", self.aabb.x , self.aabb.y, self.aabb.w,self.aabb.h)
+
 
     love.graphics.push()
     love.graphics.translate(self.aabb.x + 10, self.aabb.y + 10)
     love.graphics.draw(systems.sprites.player.idle,0,0,self.rotation + 3.14 / 2,3 ,3 ,14,20)
     love.graphics.pop()
+
+
+
+    -- setColor(0,0,1,1)
+    -- love.graphics.circle("fill",self.aabb.x,self.aabb.y,self.raduis)
+    -- setColor(1,1,1,1)
+
+
 end
 
 

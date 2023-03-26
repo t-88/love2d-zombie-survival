@@ -21,6 +21,22 @@ end
 
 function ZombieManager:addZombie(zombie)
     zombie.target = self.player 
+    self.systems.collistionManagers[self.systems.currRoom]:addCircleCollistion(
+            zombie,
+            self.player,
+            nil,
+            nil,
+            0.5
+        )
+    for _ , otherZombie in pairs(self.zombies) do 
+        self.systems.collistionManagers[self.systems.currRoom]:addCircleCollistion(
+            zombie,
+            otherZombie,
+            nil,
+            nil,
+            0.5
+        )
+    end
     table.insert(self.zombies,zombie)
 end
 
@@ -28,15 +44,19 @@ function ZombieManager:update()
     for i = #self.zombies , 1 , -1  do  
         self.zombies[i]:update(self.systems)
         if self.zombies[i].dead then
-            table.remove(self.zombies,_)
+            table.remove(self.zombies,i)
         end
     end
 end
 
 function ZombieManager:render() 
+    love.graphics.push()
+    love.graphics.translate(self.systems.offset.x, self.systems.offset.y)
     for _ , zombie in pairs(self.zombies) do 
         zombie:render(self.systems)
     end
+    love.graphics.pop()
+
 end
 
 

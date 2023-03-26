@@ -10,7 +10,7 @@ function Rifle:new(obj)
     self.__index = self
     
     self.used = false
-    self.shootDelay = 0.1
+    self.shootDelay = 0.06
     self.shootTimer = 0
 
     self.bullet = Bullet:new()
@@ -19,15 +19,23 @@ function Rifle:new(obj)
 
     self.bullet.speed = 1800
     self.bullet.lifeSpan = 0.8
-    self.bullet.damage = 1.8
-    self.bullet.aabb.w = 4
-    self.bullet.aabb.h = 4
+    self.bullet.damage = 2
+    self.bullet.aabb.w = 10
+    self.bullet.aabb.h = 10
+
+    self.shootEffect = {
+        timer = 0,
+        intensity = 30,
+        x = 0,
+        y = 0,
+        color = {1,1,0},
+    }
 
 
     self.initSpread = 0
     self.maxSpreapd = 0.15
     self.spread = self.initSpread
-    self.shakeVel = {x = 3 , y = 3}
+    self.shakeVel = {x = 2 , y = 2 }
 
     self.id = "rifle"
 
@@ -38,8 +46,8 @@ end
 
 function Rifle:shoot(player)
     if not self.used then
-        self.bullet.aabb.x = player.aabb.x
-        self.bullet.aabb.y = player.aabb.y
+        self.bullet.aabb.x = player.aabb.x + 10 + 20 * math.cos(player.rotation)
+        self.bullet.aabb.y = player.aabb.y + 10 + 20 *  math.sin(player.rotation)
         if self.spread > self.maxSpreapd then
             self.spread = self.maxSpreapd
         end
@@ -49,6 +57,10 @@ function Rifle:shoot(player)
         tmpBullet.rotation = player.rotation + love.math.random(-self.spread* 100,self.spread * 100) / 100
         
         player:shoot(deepcopy(tmpBullet))
+        self.shootEffect.x = self.bullet.aabb.x
+        self.shootEffect.y = self.bullet.aabb.y
+        player:addShootEffect(deepcopy(self.shootEffect))
+
 
         self.spread = self.spread + 0.015
         self.used = true

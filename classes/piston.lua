@@ -28,8 +28,8 @@ end
 
 function Piston:shoot(player)
     if not self.used then
-        self.bullet.aabb.x = player.aabb.x
-        self.bullet.aabb.y = player.aabb.y
+        self.bullet.aabb.x = player.aabb.x + 10 + 20 * math.cos(player.rotation)
+        self.bullet.aabb.y = player.aabb.y + 10 + 20 *  math.sin(player.rotation)
         self.bullet.rotation = player.rotation
 
         player:shoot(deepcopy(self.bullet))

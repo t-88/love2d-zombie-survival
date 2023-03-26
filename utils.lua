@@ -134,6 +134,35 @@ function rectToRect( rect1, rect2,depthAndNormal)
 end
 
 
+function circleToCircleResponse(entity1,entity2) 
+    local diff = {
+        x = entity1.x - entity2.x,
+        y = entity1.y - entity2.y,
+    }
+    local magSqr = ((diff.x * diff.x) + (diff.y * diff.y)) 
+    if  magSqr < (entity1.raduis + entity2.raduis) * (entity1.raduis + entity2.raduis) then
+        local distance = math.sqrt(magSqr)
+        diff.x = diff.x / distance
+        diff.y = diff.y / distance
+        distance =  distance - (entity1.raduis + entity2.raduis)
+
+        return  true , diff , distance
+    end
+    return false 
+
+end
+
+function circleToCircle(entity1,entity2)
+    local diff = {
+        x = entity1.x - entity2.x,
+        y = entity1.y - entity2.y,
+    }
+    local magSqr = ((diff.x * diff.x) + (diff.y * diff.y)) 
+    if  magSqr < (entity1.raduis + entity2.raduis) * (entity1.raduis + entity2.raduis) then
+        return  true
+    end
+    return false 
+end
 
 function AABB(aabb1,aabb2)
     return aabb1.x < aabb2.x + aabb2.w and aabb1.y < aabb2.y + aabb2.h and  aabb1.x + aabb1.w > aabb2.x  and   aabb1.y + aabb1.h > aabb2.y  

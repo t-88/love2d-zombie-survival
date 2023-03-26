@@ -27,25 +27,35 @@ function Zombie:new(obj)
         attack = 'attack',
         notActive =  'not-active',
     }
-    self.state = 'not-active' 
+    self.state = 'fellow' 
     self.spriteInfo = {}
-    
+
+    self.spriteName = "zombie"
+    self.scale = 3
+    self.speed = 100
+
+
+    self.offset = {
+        x = 0,
+        y = 0,
+    }
+
+    self.origin = {
+        x = 10,
+        y = 10,
+    }
+
+
+    self.raduis = 30
     return deepcopy(obj)
 end
 
-function Zombie:initSprite()
-    self.spriteInfo = {
-        sprite = "zombie",
-        rotation = 0,
-        aabb = self.aabb,
-        scale = 3,
-    }
-end
+
 
 function Zombie:fellowTarget() 
-    self.spriteInfo.rotation = math.atan2(self.target.aabb.y - self.aabb.y,self.target.aabb.x - self.aabb.x) 
-    self.vel.x = self.vel.x + math.cos(self.spriteInfo.rotation)
-    self.vel.y = self.vel.y + math.sin(self.spriteInfo.rotation)
+    self.rotation = math.atan2(self.target.aabb.y - self.aabb.y,self.target.aabb.x - self.aabb.x) 
+    self.vel.x = self.vel.x + math.cos(self.rotation)
+    self.vel.y = self.vel.y + math.sin(self.rotation)
 
 
     self.aabb.x = self.aabb.x + self.speed * self.vel.x * love.timer.getDelta()
@@ -96,14 +106,18 @@ function Zombie:stateRendering()
 end
 
 function Zombie:render(systems)
+
     -- setColor(self.color[1],self.color[2],self.color[3],self.color[4])
     -- love.graphics.rectangle("fill",self.aabb.x,self.aabb.y,self.aabb.w,self.aabb.h)
+    -- love.graphics.circle("fill",self.aabb.x,self.aabb.y,self.raduis)
     -- setColor(1,1,1,1)
+
+
 
 
     -- love.graphics.push()
     -- love.graphics.translate(self.aabb.x, self.aabb.y)
-    -- love.graphics.draw(systems.sprites.zombie.idle,0,0,self.spriteInfo.rotation,0.25,0.25,100,100)
+    -- love.graphics.draw(systems.sprites.zombie.idle,0,0,self.rotation,0.25,0.25,100,100)
     -- love.graphics.pop()
 
     -- self:stateRendering()

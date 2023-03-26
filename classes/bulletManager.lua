@@ -1,4 +1,4 @@
-require 'utils'
+require "utils"
 local BulletManager = {}
 function BulletManager:new(obj)
     obj = obj or {}
@@ -11,8 +11,15 @@ function BulletManager:new(obj)
 end
 
 
+function BulletManager:setSystems(systems)
+    self.systems = systems
+end     
+
+
 function BulletManager:addBullet(bullet)     
     table.insert(self.bullets,bullet)
+    self.systems.cameraManager.cameras[self.systems.currRoom]:addSprite(bullet)
+    
 end
 
 function BulletManager:update() 

@@ -149,6 +149,9 @@ function WeaponManager:render()
         drop:render()
     end
 
+    love.graphics.print(self.weapons[1].ammo,self.currWeaponAABB.x + self.currWeaponAABB.w - 20 ,self.currWeaponAABB.y)
+    love.graphics.print(self.weapons[1].currAmmo,self.currWeaponAABB.x ,self.currWeaponAABB.y)
+
 
     
 end

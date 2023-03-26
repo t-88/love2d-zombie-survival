@@ -1,7 +1,5 @@
-require 'utils'
-local InventoryBar = require "classes/ui/inventoryBar"
-local currWeapon = require "classes/ui/currWeapon"
-local Bars = require "classes/ui/bars"
+require "utils"
+local CrateUi = require "classes/ui/crateUi"
 
 local UiManager = {}
 function UiManager:new(obj)
@@ -9,14 +7,8 @@ function UiManager:new(obj)
     setmetatable(obj,self)
     self.__index = self
     
-    self.inventoryBar = InventoryBar:new()
-    self.currWeapon = currWeapon:new()
-    self.bars = Bars:new()
-    self.children = {
-        self.inventoryBar,
-        self.currWeapon,
-        self.bars
 
+    self.children = {
     }
     
 
@@ -24,17 +16,22 @@ function UiManager:new(obj)
 
     return obj
 end
-
+function UiManager:add(child)
+    table.insert(self.children,child)
+end
+    function UiManager:setSystems(systems)
+    self.systems = systems
+end
 function UiManager:update()
     for _ , child in pairs(self.children) do 
-        child:update()
+        child:update(self.systems)
     end
 end
 
 function UiManager:render()
 
     for _ , child in pairs(self.children) do 
-        child:render()
+        child:render(self.systems)
     end
 end
 

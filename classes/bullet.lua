@@ -6,14 +6,17 @@ function Bullet:new(obj)
     obj = obj or {}
     setmetatable(obj,self)
     self.__index = self
-    self.aabb.w = 8
-    self.aabb.h = 8
+    self.aabb.w = 10
+    self.aabb.h = 10
     self.lifeSpan = 1000
     self.initLifeSpace = 1000
     self.damage = 1
     self.minDamage = 1
     self.mapDamageToLifeSpan  = false
 
+
+    self.spriteName = "bulletDefault"
+    self.scale = 3
     return deepcopy(obj)
 end
 
@@ -48,6 +51,6 @@ function Bullet:update()
 end
 
 function Bullet:render()
-    love.graphics.rectangle("fill", self.aabb.x, self.aabb.y, self.aabb.w, self.aabb.h)
+    -- love.graphics.rectangle("fill", self.aabb.x, self.aabb.y, self.aabb.w, self.aabb.h)
 end
 return Bullet

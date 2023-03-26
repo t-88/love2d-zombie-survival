@@ -86,10 +86,6 @@ function SpawnRoom:init()
         -- self.systems.cameraManager.cameras[self.id]:addEntity(wall)
         -- self.systems.collistionManagers[self.id]:addCollistionWithStatic(wall,self.systems.player,function()  end)
 -- end
-
-
-    local zombie = Zombie:new()
-    self.systems.zombieManagers[self.systems.currRoom]:addZombie(zombie)
 end
 
 
