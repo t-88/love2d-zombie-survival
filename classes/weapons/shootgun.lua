@@ -39,11 +39,11 @@ function ShootGun:new(obj)
         color = {1,0,0}
     }
 
-    self.reload = false
     self.reloadTime = 1
     self.reloadDelay = 1
+    self.scale = 1.5
 
-    self.id = "shootgun"
+    self.spriteName = "shootgun"
 
     return deepcopy(obj)
 end
@@ -52,9 +52,9 @@ function ShootGun:shoot(player)
     if player.isInCrate then return end 
 
 
-    if not self.used and self.currAmmo == 0 and not self.reload then
-        self.reload = true 
-    end 
+    if not self.used and self.currAmmo == 0 and not self.reload then self.reload = true  end
+    
+    
     if not self.used and self.currAmmo > 0 then
         self.currAmmo = self.currAmmo - 1
         self.bullet.aabb.x = player.aabb.x  + 10 + 20 * math.cos(player.rotation)
@@ -92,26 +92,7 @@ function ShootGun:update(player)
     end 
 
 
-    if love.keyboard.isDown("r") and not self.reload and not self.used then
-        self.reload = true
-    end
-
-    if self.reload then
-        self.reloadTime = self.reloadTime - love.timer.getDelta()
-        if self.reloadTime < 0 then
-            self.reload = false
-            self.reloadTime = self.reloadDelay
-
-            if self.ammo+ self.currAmmo >= self.maxCurrAmmo then
-                self.ammo = self.ammo - self.maxCurrAmmo + self.currAmmo 
-                self.currAmmo = self.maxCurrAmmo
-            else 
-                self.currAmmo = self.currAmmo + self.ammo 
-                self.ammo = 0 
-            end
-            
-        end
-    end
+    self:reload()
 
     
 end

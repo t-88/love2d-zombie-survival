@@ -52,8 +52,8 @@ end
 
 
 
-function Zombie:fellowTarget() 
-    self.rotation = math.atan2(self.target.aabb.y - self.aabb.y,self.target.aabb.x - self.aabb.x) 
+function Zombie:fellowTarget(target) 
+    self.rotation = math.atan2(target.aabb.y - self.aabb.y,target.aabb.x - self.aabb.x) 
     self.vel.x = self.vel.x + math.cos(self.rotation)
     self.vel.y = self.vel.y + math.sin(self.rotation)
 
@@ -64,31 +64,31 @@ function Zombie:fellowTarget()
 
     self.vel = {x = 0 , y  = 0}
 end
-function Zombie:update(systems) 
+function Zombie:update(target) 
     if self.health <= 0 then
         self.dead = true
     end
 
-    if not self.target then goto end_state_machine end 
-
 
     if self.state == self.allStates.notActive then
-        local distance = (self:getCenterOfRect().x - self.target.aabb.x) * (self:getCenterOfRect().x - self.target.aabb.x) + (self:getCenterOfRect().y - self.target.aabb.y) * (self:getCenterOfRect().y - self.target.aabb.y) 
+        local distance = (self:getCenterOfRect().x - target.aabb.x) * (self:getCenterOfRect().x - target.aabb.x) + (self:getCenterOfRect().y - target.aabb.y) * (self:getCenterOfRect().y - target.aabb.y) 
         if distance <= self.detectRaduis * self.detectRaduis then
             self.state = self.allStates.fellow
         end
     elseif self.state == self.allStates.fellow then
-        local distance = (self:getCenterOfRect().x - self.target.aabb.x) * (self:getCenterOfRect().x - self.target.aabb.x) + (self:getCenterOfRect().y - self.target.aabb.y) * (self:getCenterOfRect().y - self.target.aabb.y) 
-        self:fellowTarget()
+        local distance = (self:getCenterOfRect().x - target.aabb.x) * (self:getCenterOfRect().x - target.aabb.x) + (self:getCenterOfRect().y - target.aabb.y) * (self:getCenterOfRect().y - target.aabb.y) 
+        self:fellowTarget(target)
         if distance <= self.attackRaduis * self.attackRaduis then
             self.state = self.allStates.attack
         end
     elseif self.state == self.allStates.attack then
         self.attackTimer = self.attackTimer  + love.timer.getDelta()
         if self.attackTimer > self.attackDelay then
-            self.target:takeDamage(2)
-            self.attackTimer = 0
-            self.state = self.allStates.fellow
+            if target.spriteName ~= "lightBomb"  then
+                target:takeDamage(2)
+                self.attackTimer = 0
+                self.state = self.allStates.fellow
+            end 
         end 
     end
 
@@ -97,30 +97,5 @@ function Zombie:update(systems)
     ::end_state_machine::
 end
 
-function Zombie:stateRendering()
-    if self.state == self.allStates.notActive then
-        love.graphics.circle("line", self.aabb.x + self.aabb.w / 2, self.aabb.y + self.aabb.h / 2,self.detectRaduis)
-    elseif self.state == self.allStates.fellow then
-        love.graphics.circle("line", self.aabb.x + self.aabb.w / 2, self.aabb.y + self.aabb.h / 2,self.attackRaduis)
-    end
-end
-
-function Zombie:render(systems)
-
-    -- setColor(self.color[1],self.color[2],self.color[3],self.color[4])
-    -- love.graphics.rectangle("fill",self.aabb.x,self.aabb.y,self.aabb.w,self.aabb.h)
-    -- love.graphics.circle("fill",self.aabb.x,self.aabb.y,self.raduis)
-    -- setColor(1,1,1,1)
-
-
-
-
-    -- love.graphics.push()
-    -- love.graphics.translate(self.aabb.x, self.aabb.y)
-    -- love.graphics.draw(systems.sprites.zombie.idle,0,0,self.rotation,0.25,0.25,100,100)
-    -- love.graphics.pop()
-
-    -- self:stateRendering()
-end
 
 return Zombie

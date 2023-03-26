@@ -41,6 +41,11 @@ function Crate:new(x,y,obj)
     self.zIndex = 1
     return deepcopy(obj)
 end
+function Crate:init(player,offset)
+    self.player = player
+    self.offset = offset
+end
+
 function Crate:update(systems)
     if self.scale > self.minScale then self.scale = self.scale - love.timer.getDelta() 
     else  
@@ -49,25 +54,26 @@ function Crate:update(systems)
         self.zIndex = -1
     end
 
+    if self.crateUi.items == 0 then self.empty = true end
     
     if self.empty then
         self.spriteName = "crate"
         self.isOpen = false
         self.crateUi.visible = false
-        systems.player.isInCrate = false
+        self.player.isInCrate = false
         return
     end 
 
     if not self.isOnTheGround then return end
 
     local entity2 = {   
-        x = systems.player.aabb.x + systems.offset.x,
-        y = systems.player.aabb.y + systems.offset.y,
-        raduis = systems.player.raduis
+        x = self.player.aabb.x + self.offset.x,
+        y = self.player.aabb.y + self.offset.y,
+        raduis = self.player.raduis
     } 
     local entity1 = {   
-        x = self.aabb.x + systems.offset.x,
-        y = self.aabb.y + systems.offset.y,
+        x = self.aabb.x + self.offset.x,
+        y = self.aabb.y + self.offset.y,
         raduis = self.raduis + 10
     } 
     if circleToCircle(entity1,entity2) then
@@ -75,24 +81,18 @@ function Crate:update(systems)
         if not self.isOpen and love.keyboard.isDown("e") then
             self.isOpen = true
             self.crateUi.visible = true
-            systems.player.isInCrate = true
+            self.player.isInCrate = true
         end
     else 
+        self.spriteName = "crate"
         if self.isOpen then
-            self.spriteName = "crate"
             self.isOpen = false
             self.crateUi.visible = false
-            systems.player.isInCrate = false
+            self.player.isInCrate = false
         end
     end
 
 
-end
-
-function Crate:render()
-    setColor(self.color[1],self.color[2],self.color[3],self.color[4])
-        -- love.graphics.circle("fill", self.aabb.x , self.aabb.y, self.raduis)
-    setColor(1,1,1,1)
 end
 
 return Crate

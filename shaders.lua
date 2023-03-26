@@ -38,19 +38,23 @@ local shadowShaderCode = [[
 ]]
 
 
-shaders.addLightSource = function(index,pos,diffuse,power)
-    shaders.shadow:send("lights["..index.."].pos",{pos.x,pos.y})
-    shaders.shadow:send("lights["..index.."].diffuse",diffuse)
-    shaders.shadow:send("lights["..index.."].power",power)
+shaders.addLightSource = function(pos,diffuse,power)
+    shaders.shadow:send("lights["..shaders.count.."].pos",{pos.x,pos.y})
+    shaders.shadow:send("lights["..shaders.count.."].diffuse",diffuse)
+    shaders.shadow:send("lights["..shaders.count.."].power",power)
+
+    shaders.count = shaders.count + 1
 end
 
 shaders.applyShadows = function(width,height,count)
+    shaders.count = 0
     love.graphics.setShader(shaders.shadow)
     shaders.shadow:send("lightCount",count)
     shaders.shadow:send("screen",{width,height})
 end
 
 shaders.init = function()
+    shaders.count = 0
     shaders.shadow = love.graphics.newShader(shadowShaderCode)
 
 end

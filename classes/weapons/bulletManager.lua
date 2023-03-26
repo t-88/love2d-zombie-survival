@@ -11,14 +11,14 @@ function BulletManager:new(obj)
 end
 
 
-function BulletManager:setSystems(systems)
-    self.systems = systems
+function BulletManager:init(camera)
+    self.camera = camera
 end     
 
 
 function BulletManager:addBullet(bullet)     
     table.insert(self.bullets,bullet)
-    self.systems.camera:addSprite(bullet)
+    self.camera:addSprite(bullet)
     
 end
 
@@ -29,8 +29,6 @@ function BulletManager:update()
             table.remove(self.bullets,i)
         end
     end
-
-
 end
 
 

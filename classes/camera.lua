@@ -79,8 +79,8 @@ function Camera:update(target)
             self.offset.y = self.smallRect.y + self.smallRect.h - target.aabb.y 
         end 
     end 
-    self.systems.offset.x = self.offset.x
-    self.systems.offset.y = self.offset.y
+    self.systems.camera.offset.x = self.offset.x
+    self.systems.camera.offset.y = self.offset.y
 
 
 
@@ -113,7 +113,7 @@ function Camera:render(target)
     
         love.graphics.draw(self.systems.sprites[self.background.spriteName],self.background.aabb.x,self.background.aabb.y,self.background.rotation,self.background.scale,self.background.scale)
         for _ , sprite in pairs(self.sprites) do
-            love.graphics.draw(self.systems.sprites[sprite.spriteName],sprite.aabb.x + sprite.offset.x,sprite.aabb.y  + sprite.offset.y,sprite.rotation + sprite.rotationOffset,sprite.scale,sprite.scale,sprite.origin.x,sprite.origin.y)
+            love.graphics.draw(self.systems.sprites[sprite.spriteName],sprite.aabb.x ,sprite.aabb.y  ,sprite.rotation + sprite.rotationOffset,sprite.scale,sprite.scale,sprite.origin.x,sprite.origin.y)
         end
     love.graphics.pop()
 end

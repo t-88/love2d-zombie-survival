@@ -1,7 +1,7 @@
 require "utils"
 local Entity = require "./classes/entity"
-local Weapon = require "./classes/weapon"
-local Bullet = require "./classes/bullet"
+local Weapon = require "./classes/weapons/weapon"
+local Bullet = require "./classes/weapons/bullet"
 
 
 local Pistol = Weapon:new()
@@ -16,10 +16,17 @@ function Pistol:new(obj)
     self.bullet.speed = 1500
     self.bullet.damage = 1
 
+
+    self.ammo = 10
+    self.currAmmo = 13
+    self.maxCurrAmmo = 13
+
     self.shakeVel = {x = 2 , y = 2}
     
 
-    self.id = "pistol"
+    self.scale = 2
+
+    self.spriteName = "pistol"
 
 
 
@@ -28,8 +35,11 @@ end
 
 function Pistol:shoot(player)
     if player.isInCrate then return end 
+    if not self.used and self.currAmmo == 0 and not self.reload then self.reload = true  end
 
-    if not self.used then
+    if not self.used and self.currAmmo > 0 then
+        self.currAmmo =  self.currAmmo - 1
+
         self.bullet.aabb.x = player.aabb.x + 10 + 20 * math.cos(player.rotation)
         self.bullet.aabb.y = player.aabb.y + 10 + 20 *  math.sin(player.rotation)
         self.bullet.rotation = player.rotation
@@ -46,6 +56,9 @@ function Pistol:update(player)
     elseif not love.mouse.isDown(1) then
         self.used = false
     end 
+
+    self:reload()
+
 end
 
 function Pistol:render()

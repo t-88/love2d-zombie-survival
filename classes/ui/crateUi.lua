@@ -34,8 +34,8 @@ function CrateUI:update(systems)
     if love.mouse.isDown(1) then
         for  i = #self.items , 1 , -1 do 
             local mouseWithOffset = {
-                x = systems.mouse.aabb.x - systems.offset.x,
-                y = systems.mouse.aabb.y - systems.offset.y,
+                x = systems.mouse.aabb.x - systems.camera.offset.x,
+                y = systems.mouse.aabb.y - systems.camera.offset.y,
                 w = systems.mouse.aabb.w,
                 h = systems.mouse.aabb.h,
             }
@@ -51,7 +51,7 @@ end
 function CrateUI:render(systems)
     if not self.visible then return end
     love.graphics.push()
-    love.graphics.translate(systems.offset.x,systems.offset.y)
+    love.graphics.translate(systems.camera.offset.x,systems.camera.offset.y)
 
     drawRect("fill",self.offset.x,self.offset.y,15 + 50 * 2,15 + 50 * 2)
     setColor(1,0,0,1)

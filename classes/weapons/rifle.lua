@@ -23,6 +23,10 @@ function Rifle:new(obj)
     self.bullet.aabb.w = 10
     self.bullet.aabb.h = 10
 
+    self.ammo = 100
+    self.currAmmo = 30
+    self.maxCurrAmmo = 30
+
     self.shootEffect = {
         timer = 0,
         intensity = 30,
@@ -36,8 +40,9 @@ function Rifle:new(obj)
     self.maxSpreapd = 0.15
     self.spread = self.initSpread
     self.shakeVel = {x = 2 , y = 2 }
+    self.scale = 1.5
 
-    self.id = "rifle"
+    self.spriteName = "rifle"
 
 
 
@@ -46,8 +51,11 @@ end
 
 function Rifle:shoot(player)
     if player.isInCrate then return end 
+    if not self.used and self.currAmmo == 0 and not self.haveToReload then self.haveToReload = true  end
 
-    if not self.used then
+    if not self.used and self.currAmmo > 0 and not self.haveToReload then
+        self.currAmmo =  self.currAmmo - 1
+
         self.bullet.aabb.x = player.aabb.x + 10 + 20 * math.cos(player.rotation)
         self.bullet.aabb.y = player.aabb.y + 10 + 20 *  math.sin(player.rotation)
         if self.spread > self.maxSpreapd then
@@ -88,6 +96,9 @@ function Rifle:update(player)
             self.used = false
         end
     end
+
+self:reload()
+
 
     
 end

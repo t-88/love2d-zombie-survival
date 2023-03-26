@@ -15,13 +15,17 @@ function crateManager:new(obj)
     return deepcopy(obj)
 end
 
-function crateManager:setSystems(systems)
-    self.systems = systems
+function crateManager:init(player,camera,uiManager,items)
+    self.player = player
+    self.camera = camera
+    self.uiManager = uiManager
+    self.items = items
 end
 
 
 function crateManager:spawnACrate()
     if not self.ones then return end
+    self.ones = false   
 
     local crate = Crate:new(
         love.mouse.getX(),
@@ -29,23 +33,20 @@ function crateManager:spawnACrate()
         -- love.math.random(40,self.systems.fullWidth - 40),
         -- love.math.random(40,self.systems.fullHeight - 40)
     )
-
-    self.ones = false   
+    crate:init(self.player,self.camera.offset)
+    
     for i = 1 , 4 do 
-        crate.crateUi:addItem(self.systems.items[1])
+        crate.crateUi:addItem(self.items[1])
     end
-    self.systems.uiManager:add(crate.crateUi)
-    table.insert(self.crates,crate) 
 
-    self.systems.camera:addSprite(crate)
+    self.uiManager:add(crate.crateUi)
+    self.camera:addSprite(crate)
+    table.insert(self.crates,crate) 
 end
 
 function crateManager:update()
     for i = #self.crates , 1 , -1 do
-        self.crates[i]:update(self.systems)
-        if #self.crates[i].crateUi.items == 0 then
-            self.crates[i].empty = true
-        end
+        self.crates[i]:update()
     end 
 
     if love.keyboard.isDown("space") then
@@ -53,13 +54,6 @@ function crateManager:update()
     else 
         self.ones = true
     end
-end
-
-
-function crateManager:render()
-    -- for _ , crate in pairs(self.crates) do
-        -- crate:render()
-    -- end 
 end
 
 return crateManager

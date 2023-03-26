@@ -17,6 +17,12 @@ function Bullet:new(obj)
 
     self.spriteName = "bulletDefault"
     self.scale = 3
+
+    self.raduis = 20
+    self.origin = {
+        x = -8,
+        y = 0,
+    }
     return deepcopy(obj)
 end
 

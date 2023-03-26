@@ -9,12 +9,12 @@ function Player:new(obj)
     setmetatable(obj,self)
     self.__index = self
 
-    self.speed = 400
+    self.speed = 200
     self.aabb.x = 400
     self.aabb.y = 400
     self.rotation = 0
     self.bullets = {}
-    self.health = 10
+    self.health = 100
     self.isInCrate = false
 
     self.spriteName = "player"
@@ -103,7 +103,7 @@ function Player:input()
     end
 
     local mouseX , mouseY = systems.mouse.aabb.x  ,systems.mouse.aabb.y
-    self.rotation = math.atan2(mouseY - self.aabb.y - systems.offset.y,mouseX - self.aabb.x - systems.offset.x)
+    self.rotation = math.atan2(mouseY - self.aabb.y - systems.camera.offset.y,mouseX - self.aabb.x - systems.camera.offset.x)
 
 end
 
@@ -134,10 +134,10 @@ end
 function Player:render()
 
 
-    love.graphics.push()
-    love.graphics.translate(self.aabb.x + 10, self.aabb.y + 10)
-    love.graphics.draw(systems.sprites.player.idle,0,0,self.rotation + 3.14 / 2,3 ,3 ,14,20)
-    love.graphics.pop()
+    -- love.graphics.push()
+    -- love.graphics.translate(self.aabb.x + 10, self.aabb.y + 10)
+    -- love.graphics.draw(systems.sprites.player.idle,0,0,self.rotation + 3.14 / 2,3 ,3 ,14,20)
+    -- love.graphics.pop()
 
 
 
