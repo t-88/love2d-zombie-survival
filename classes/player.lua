@@ -69,8 +69,8 @@ end
 
 function Player:shoot(bullet)
     if self.isInCrate then return end
-    for _ , zombie in pairs(systems.zombieManagers[systems.currRoom].zombies) do 
-        systems.collistionManagers[systems.currRoom]:addCircleCollistion(
+    for _ , zombie in pairs(systems.zombieManager.zombies) do 
+        systems.collistionManager:addCircleCollistion(
         bullet,
         zombie,
         function(bullet , zombie)  self:onBulletHitZombie(bullet , zombie) end,
@@ -79,11 +79,7 @@ function Player:shoot(bullet)
     ) 
     end
 
-    for _ , wall in pairs(systems.roomManager.rooms[systems.currRoom].walls) do 
-        systems.collistionManagers[systems.currRoom]:addCollistionAABB(bullet,wall,function(bullet , wall)  bullet.dead = true end) 
-    end
-
-    systems.cameraManager.cameras[systems.currRoom]:shake(systems.weaponManager.weapons[1].shakeVel)
+    systems.camera:shake(systems.weaponManager.weapons[1].shakeVel)
     systems.bulletManager:addBullet(bullet)
 end
 

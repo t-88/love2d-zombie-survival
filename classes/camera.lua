@@ -3,7 +3,7 @@ require "utils"
 
 local Entity = require "./classes/entity"
 local Camera = Entity:new()
-function Camera:new(bounderies,obj)
+function Camera:new(obj)
     obj = obj or {}
     setmetatable(obj,self)
     self.__index = self
@@ -16,16 +16,18 @@ function Camera:new(bounderies,obj)
     self.shakeVel = {x = 2 ,y =  2}
     self.shakeDead = 0.9
 
-    self.bounderies = bounderies
+    self.bounderies = {}
     
     self.sprites = {}
     self.background = nil
     return deepcopy(obj)
 end
 
-function Camera:setSystems(systems)
+function Camera:init(systems)
     self.systems = systems 
     self:addSprite(systems.player)
+    self.bounderies = systems.bounderies
+    self.background = systems.background
 end
 
 function Camera:addSprite(sprite)
@@ -106,9 +108,6 @@ end
 
 
 function Camera:render(target)
-
-    
-
     love.graphics.push()
         love.graphics.translate(self.offset.x,self.offset.y)
     
@@ -116,12 +115,7 @@ function Camera:render(target)
         for _ , sprite in pairs(self.sprites) do
             love.graphics.draw(self.systems.sprites[sprite.spriteName],sprite.aabb.x + sprite.offset.x,sprite.aabb.y  + sprite.offset.y,sprite.rotation + sprite.rotationOffset,sprite.scale,sprite.scale,sprite.origin.x,sprite.origin.y)
         end
-
-
     love.graphics.pop()
-
-
-    
 end
 
 

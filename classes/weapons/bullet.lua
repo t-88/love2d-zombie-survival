@@ -50,7 +50,4 @@ function Bullet:update()
 
 end
 
-function Bullet:render()
-    -- love.graphics.rectangle("fill", self.aabb.x, self.aabb.y, self.aabb.w, self.aabb.h)
-end
 return Bullet

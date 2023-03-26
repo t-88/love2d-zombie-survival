@@ -37,7 +37,7 @@ function crateManager:spawnACrate()
     self.systems.uiManager:add(crate.crateUi)
     table.insert(self.crates,crate) 
 
-    self.systems.cameraManager.cameras[self.systems.currRoom]:addSprite(crate)
+    self.systems.camera:addSprite(crate)
 end
 
 function crateManager:update()

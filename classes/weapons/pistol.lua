@@ -4,8 +4,8 @@ local Weapon = require "./classes/weapon"
 local Bullet = require "./classes/bullet"
 
 
-local Piston = Weapon:new()
-function Piston:new(obj)
+local Pistol = Weapon:new()
+function Pistol:new(obj)
     obj = obj or {}
     setmetatable(obj,self)
     self.__index = self
@@ -26,7 +26,7 @@ function Piston:new(obj)
     return deepcopy(obj)
 end
 
-function Piston:shoot(player)
+function Pistol:shoot(player)
     if player.isInCrate then return end 
 
     if not self.used then
@@ -40,7 +40,7 @@ function Piston:shoot(player)
 
 end
 
-function Piston:update(player)
+function Pistol:update(player)
     if love.mouse.isDown(1) then
         self:shoot(player)
     elseif not love.mouse.isDown(1) then
@@ -48,8 +48,8 @@ function Piston:update(player)
     end 
 end
 
-function Piston:render()
+function Pistol:render()
 end
 
 
-return Piston
+return Pistol

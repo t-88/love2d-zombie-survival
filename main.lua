@@ -2,19 +2,15 @@ local Player = require "./classes/player"
 local Zombie = require "./classes/zombie"
 local Entity = require "./classes/entity"
 
-local Piston =require "./classes/piston"
-local Shootgun =require "./classes/shootgun"
-local Rifle = require "./classes/rifle"
+local Rifle = require "./classes/weapons/rifle"
+
 
 local systems = require "systems"
-local maps = require "maps"
 local shaders = require "shaders"
 
 
 local player
-local piston
-local rifle
-local shootgun
+
 
 
 
@@ -27,37 +23,19 @@ function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
     player = Player:new()
     systems.initSys(player)
-    maps.init()
     shaders.init()
 
 
 
-    local background = Entity:new()
-    background.spriteName = "background"
-    background.aabb.x = -700    
-    background.aabb.y =  -100  
-    background.scale = 3.7
-    background.zIndex = -99
 
-    systems.cameraManager.cameras[systems.currRoom].background = background
 
-    rifle = Rifle:new()
-    piston = Piston:new()
-    shootgun = Shootgun:new()
-    -- systems.weaponManager:addWeapon(rifle)
-    systems.weaponManager:addWeapon(shootgun)
 
-    -- shaders.shadow = love.graphics.newShader(lightShaderText)
 
     local zombie = Zombie:new()
-    systems.zombieManagers[systems.currRoom]:addZombie(zombie)
-    systems.cameraManager.cameras[systems.currRoom]:addSprite(zombie)
+    systems.zombieManager:addZombie(zombie)
+    systems.camera:addSprite(zombie)
 
-    local zombie = Zombie:new()
-    zombie.aabb.y = 100
-    zombie.aabb.x = 100
-    systems.zombieManagers[systems.currRoom]:addZombie(zombie)
-    systems.cameraManager.cameras[systems.currRoom]:addSprite(zombie)    
+    systems.weaponManager:addWeapon(Rifle:new())
 
 
 

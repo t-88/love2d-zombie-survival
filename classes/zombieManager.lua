@@ -10,26 +10,23 @@ function ZombieManager:new(obj)
 
     return deepcopy(obj)
 end
-
-function ZombieManager:setPlayer(player)
-    self.player = player
-end 
+ 
 
 function ZombieManager:setSystems(systems)
     self.systems = systems
 end
 
 function ZombieManager:addZombie(zombie)
-    zombie.target = self.player 
-    self.systems.collistionManagers[self.systems.currRoom]:addCircleCollistion(
+    zombie.target = self.systems.player
+    self.systems.collistionManager:addCircleCollistion(
             zombie,
-            self.player,
+            self.systems.player,
             nil,
             nil,
             0.5
         )
     for _ , otherZombie in pairs(self.zombies) do 
-        self.systems.collistionManagers[self.systems.currRoom]:addCircleCollistion(
+        self.systems.collistionManager:addCircleCollistion(
             zombie,
             otherZombie,
             nil,

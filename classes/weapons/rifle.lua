@@ -1,7 +1,7 @@
 require "utils"
 local Entity = require "./classes/entity"
-local Weapon = require "./classes/weapon"
-local Bullet = require "./classes/bullet"
+local Weapon = require "./classes/weapons/weapon"
+local Bullet = require "./classes/weapons/bullet"
 
 local Rifle = Weapon:new()
 function Rifle:new(obj)

@@ -41,19 +41,7 @@ function Entity:getCenterOfRect()
     return {x = self.aabb.x + self.aabb.w / 2, y = self.aabb.y + self.aabb.h / 2}
 end
 
-function Entity:move(x,y)
-    self.aabb.x = self.aabb.x + x 
-    self.aabb.y = self.aabb.y + y 
-end
-
-function Entity:update()
-    
-end
-
-function Entity:render()
-    setColor(self.color[1],self.color[2],self.color[3],self.color[4])
-    love.graphics.rectangle("fill",self.aabb.x,self.aabb.y,self.aabb.w,self.aabb.h)
-    setColor(1,1,1,1)
-end
+function Entity:update()end
+function Entity:render()end
 
 return Entity

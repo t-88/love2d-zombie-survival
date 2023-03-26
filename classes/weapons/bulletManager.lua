@@ -18,7 +18,7 @@ end
 
 function BulletManager:addBullet(bullet)     
     table.insert(self.bullets,bullet)
-    self.systems.cameraManager.cameras[self.systems.currRoom]:addSprite(bullet)
+    self.systems.camera:addSprite(bullet)
     
 end
 
@@ -31,12 +31,6 @@ function BulletManager:update()
     end
 
 
-end
-
-function BulletManager:render() 
-    for _ , bullet in pairs(self.bullets) do 
-        bullet:render()
-    end
 end
 
 

@@ -2,28 +2,30 @@ local utils = require "utils"
 local CollistionManager = require "./classes/collistionManager" 
 local ZombieManager = require "./classes/zombieManager" 
 local Zombie = require "./classes/zombie"
+local Entity = require "./classes/entity"
+
 local CrateManager = require "./classes/crateManager"
-local WeaponManager = require "./classes/weaponManager"
-local BulletManager = require "./classes/bulletManager"
+local WeaponManager = require "./classes/weapons/weaponManager"
+local BulletManager = require "./classes/weapons/bulletManager"
 local RoomManager = require "./classes/roomManager"
-local CameraManager = require "./classes/cameraManager"
+local Camera = require "./classes/camera"
+
 local UiManager = require "./classes/ui/uiManager"
 
 
-local Rifle = require "./classes/rifle"
-local Pistol = require "./classes/piston"
-local Shootgun = require "./classes/shootgun"
+local Rifle = require "./classes/weapons/rifle"
+local Shootgun = require "./classes/weapons/shootgun"
 
 
 local systems = {}
 
-systems.collistionManagers = {}
-systems.zombieManagers = {}
+systems.collistionManager = {}
+systems.zombieManager = {}
 systems.crateManager = {}
 systems.weaponManager = {}
 systems.bulletManager = {}
 systems.roomManager = {}
-systems.cameraManager = {}
+systems.camera = {}
 systems.uiManager = {}
 systems.mouse = {aabb = {x = 0 , y = 0 ,w = 5 , h = 5}} 
 systems.sprites = {} 
@@ -39,8 +41,8 @@ systems.initSys = function (player)
     systems.gridSize = 35
     systems.widthGrid  = 22  --math.floor(love.graphics.getWidth()   / systems.gridSize)
     systems.heightGrid  = 17 --math.floor(love.graphics.getHeight()   / systems.gridSize)
-    systems.width  = systems.widthGrid * systems.gridSize
-    systems.height  = systems.heightGrid * systems.gridSize
+    systems.width  = systems.widthGrid * (systems.gridSize + 5) 
+    systems.height  = systems.heightGrid * (systems.gridSize + 5)
     systems.fullWidth  = 1500
     systems.fullHeight  = 1150
 
@@ -83,16 +85,14 @@ systems.initSys = function (player)
 
     systems.player = player
 
-    systems.scale = 2
-    systems.bounderies = {
-        bottom = 1050,
-        top = 175,
-        left = 175,
-        right = 1400,
-    }
     systems.offset = {x = 0 , y = 0}
-
-
+    systems.bounderies = {bottom = 1050,top = 175,left = 175,right = 1400}
+    systems.background = Entity:new()
+    systems.background.spriteName = "background"
+    systems.background.aabb.x = -700    
+    systems.background.aabb.y =  -100  
+    systems.background.scale = 3.7
+    systems.background.zIndex = -99
 
 
 
@@ -101,12 +101,7 @@ systems.initSys = function (player)
         pistol = love.graphics.newImage("assets/pistol.png"),
         shootgun = love.graphics.newImage("assets/shotgun.png"),
         rifle = love.graphics.newImage("assets/rifal.png"),
-        pistolAmmo = love.graphics.newImage("assets/pistol-ammo.png"),
         player = love.graphics.newImage("assets/player/player_walkready3.png"),
-
-        -- zombie = {
-            -- idle = love.graphics.newImage("assets/enemy/enemy.png"),
-        -- },
         background = love.graphics.newImage("assets/map_bg.png"),
         zombie = love.graphics.newImage("assets/enemy/enemy.png"),
         bulletDefault =  love.graphics.newImage("assets/bullet-default.png"),
@@ -115,47 +110,47 @@ systems.initSys = function (player)
     }
 
 
-    systems.roomsIds = {
-        "spawn",  -- main
-        "car1",   -- right
-        "danger", -- top
-        "house",  -- left
-        "chest",  -- down
-    }
-    systems.currRoom = "spawn"
-
-    
     systems.crateManager = CrateManager:new()
-
     systems.bulletManager = BulletManager:new()
-    systems.cameraManager = CameraManager:new(systems)
-    systems.cameraManager:setSystems(systems)
 
 
-
-
+    systems.camera = Camera:new()
+    systems.camera:init(systems)
+    systems.camera.smallRect = {x = systems.gridSize * 5,y = systems.gridSize * 4 , w = systems.gridSize * 13 , h = systems.gridSize * 10}
+    systems.camera.fixed = false
+    systems.camera.color = {1,0,0,1}
+    systems.camera.startShake = true
+ 
 
 
     systems.weaponManager = WeaponManager:new()
+    systems.zombieManager = ZombieManager:new()
+    systems.collistionManager = CollistionManager:new() 
+
+
+
+
     systems.weaponManager:setSystems(systems)
-    systems.weaponManager:setPlayer(player)
+    systems.zombieManager:setSystems(systems)
+
     systems.weaponManager:init()
+    systems.weaponManager:setPlayer(player)
 
 
 
-    for _ , roomId in pairs(systems.roomsIds) do 
-        systems.collistionManagers[roomId] = CollistionManager:new() 
-        systems.zombieManagers[roomId] = ZombieManager:new()
-        systems.zombieManagers[roomId]:setPlayer(player)
-        systems.zombieManagers[roomId]:setSystems(systems)
-    end
+    -- for _ , roomId in pairs(systems.roomsIds) do 
+        -- systems.collistionManager[roomId] = CollistionManager:new() 
+        -- systems.zombieManager[roomId] = ZombieManager:new()
+        -- systems.zombieManager[roomId]:setPlayer(player)
+        -- systems.zombieManager[roomId]:setSystems(systems)
+    -- end
 
 
     systems.roomManager = RoomManager:new(systems.gridSize)
     systems.roomManager:setSystems(systems)
 
     systems.bulletManager:setSystems(systems)
-    systems.collistionManagers[systems.currRoom]:setSystems(systems)
+    systems.collistionManager:setSystems(systems)
     systems.crateManager:setSystems(systems)
     systems.uiManager = UiManager:new()
     systems.uiManager:setSystems(systems)
@@ -169,19 +164,20 @@ end
 systems.update = function()
     systems.mouse.aabb.x , systems.mouse.aabb.y = love.mouse.getPosition() 
 
-    systems.collistionManagers[systems.currRoom]:update()
-    systems.zombieManagers[systems.currRoom]:update()
+    systems.collistionManager:update()
+    systems.zombieManager:update()
     systems.crateManager:update()
     systems.weaponManager:update()
     systems.bulletManager:update()
     systems.roomManager:update(systems.currRoom)
-    systems.cameraManager:update(systems.currRoom)
+
+    systems.camera:update(systems.player)
 
 
 
 
     systems.zombieSpawnTimer =  systems.zombieSpawnTimer - love.timer.getDelta() 
-    if systems.zombieSpawnTimer < 0 and #systems.zombieManagers[systems.currRoom].zombies < systems.maxZombieCount then 
+    if systems.zombieSpawnTimer < 0 and #systems.zombieManager.zombies < systems.maxZombieCount then 
         systems.zombieSpawnTimer = systems.zombieSpawnDelay
 
         local zombie = Zombie:new()
@@ -194,8 +190,9 @@ systems.update = function()
             zombie.aabb.y = love.math.random(-400,systems.height + 400) - systems.offset.y 
         end
 
-        systems.zombieManagers[systems.currRoom]:addZombie(zombie)
-        systems.cameraManager.cameras[systems.currRoom]:addSprite(zombie)
+        systems.zombieManager:addZombie(zombie)
+        systems.camera:addSprite(zombie)
+
     
     end
 
@@ -203,15 +200,15 @@ systems.update = function()
 
 end
 systems.render = function()
-    systems.cameraManager:render(systems.currRoom)
+    systems.camera:render()
+
     -- systems.roomManager:render(systems.currRoom)
 
-    systems.bulletManager:render()
     systems.crateManager:render()
 
 
 
-    systems.zombieManagers[systems.currRoom]:render()
+    systems.zombieManager:render()
 
     systems.uiManager:render(systems)
 
@@ -227,7 +224,7 @@ end
 
 systems.getCurrCollistionManager = function()
 
-    return systems.collistionManagers[systems.currRoom]
+    return systems.collistionManager
 end
 
 systems.renderUI = function()
@@ -244,7 +241,7 @@ systems.renderUI = function()
             h = crate.aabb.h + systems.offset.y,
         }
         local screenAABB = {x = systems.offset.x , y = systems.offset.y , w = systems.width + systems.offset.x,h = systems.height + systems.offset.y}
-        if not AABB(crateAABB,screenAABB) then
+        if not aabbToAABB(crateAABB,screenAABB) then
             systems.playerCrateRotation = math.atan2(systems.width - 200 - crateAABB.y,systems.height - 55 - crateAABB.x)
         end
 
