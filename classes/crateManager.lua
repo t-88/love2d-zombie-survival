@@ -1,6 +1,7 @@
 require "utils"
 local Crate = require "./classes/crate"
 
+
 local crateManager = {}
 function crateManager:new(obj)
     obj = obj or {}
@@ -22,7 +23,13 @@ end
 function crateManager:spawnACrate()
     if not self.ones then return end
 
-    local crate = Crate:new(love.mouse.getX(),love.mouse.getY())
+    local crate = Crate:new(
+        love.mouse.getX(),
+        love.mouse.getY()
+        -- love.math.random(40,self.systems.fullWidth - 40),
+        -- love.math.random(40,self.systems.fullHeight - 40)
+    )
+
     self.ones = false   
     for i = 1 , 4 do 
         crate.crateUi:addItem(self.systems.items[1])
@@ -30,20 +37,15 @@ function crateManager:spawnACrate()
     self.systems.uiManager:add(crate.crateUi)
     table.insert(self.crates,crate) 
 
-    -- self.crates[#self.crates].renderIndex = #self.systems.cameraManager.cameras[self.systems.currRoom].sprites + 1 
-
     self.systems.cameraManager.cameras[self.systems.currRoom]:addSprite(crate)
-
-    -- self.systems.collistionManagers[self.systems.currRoom]:addCircleCollistionStatic(
-    --     self.crates[#self.crates],
-    --     self.systems.player
-    -- )
-
 end
 
 function crateManager:update()
-    for _ , crate in pairs(self.crates) do
-        crate:update(self.systems)
+    for i = #self.crates , 1 , -1 do
+        self.crates[i]:update(self.systems)
+        if #self.crates[i].crateUi.items == 0 then
+            self.crates[i].empty = true
+        end
     end 
 
     if love.keyboard.isDown("space") then
@@ -55,9 +57,9 @@ end
 
 
 function crateManager:render()
-    for _ , crate in pairs(self.crates) do
-        crate:render()
-    end 
+    -- for _ , crate in pairs(self.crates) do
+        -- crate:render()
+    -- end 
 end
 
 return crateManager

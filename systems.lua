@@ -41,6 +41,9 @@ systems.initSys = function (player)
     systems.heightGrid  = 17 --math.floor(love.graphics.getHeight()   / systems.gridSize)
     systems.width  = systems.widthGrid * systems.gridSize
     systems.height  = systems.heightGrid * systems.gridSize
+    systems.fullWidth  = 1500
+    systems.fullHeight  = 1150
+
     love.window.setMode(systems.width, systems.height)
 
 
@@ -94,13 +97,13 @@ systems.initSys = function (player)
 
 
     systems.sprites = {
+        arrow = love.graphics.newImage("assets/arrow.png"),
         pistol = love.graphics.newImage("assets/pistol.png"),
         shootgun = love.graphics.newImage("assets/shotgun.png"),
         rifle = love.graphics.newImage("assets/rifal.png"),
         pistolAmmo = love.graphics.newImage("assets/pistol-ammo.png"),
-        player = {
-            idle = love.graphics.newImage("assets/player/player_walkready3.png"),
-        },
+        player = love.graphics.newImage("assets/player/player_walkready3.png"),
+
         -- zombie = {
             -- idle = love.graphics.newImage("assets/enemy/enemy.png"),
         -- },
@@ -158,6 +161,9 @@ systems.initSys = function (player)
     systems.uiManager:setSystems(systems)
 
 
+    systems.playerCrateRotation = 0
+
+
 end
 
 systems.update = function()
@@ -197,8 +203,8 @@ systems.update = function()
 
 end
 systems.render = function()
-    systems.roomManager:render(systems.currRoom)
     systems.cameraManager:render(systems.currRoom)
+    -- systems.roomManager:render(systems.currRoom)
 
     systems.bulletManager:render()
     systems.crateManager:render()
@@ -226,6 +232,28 @@ end
 
 systems.renderUI = function()
     systems.weaponManager:render()
+
+
+    love.graphics.circle("line",systems.width - 200,systems.height - 60 , 35)
+    local crate = systems.crateManager.crates[#systems.crateManager.crates]
+    if crate then
+        crateAABB = {
+            x = crate.aabb.x + systems.offset.x,
+            y = crate.aabb.y + systems.offset.y,
+            w = crate.aabb.w + systems.offset.x,
+            h = crate.aabb.h + systems.offset.y,
+        }
+        local screenAABB = {x = systems.offset.x , y = systems.offset.y , w = systems.width + systems.offset.x,h = systems.height + systems.offset.y}
+        if not AABB(crateAABB,screenAABB) then
+            systems.playerCrateRotation = math.atan2(systems.width - 200 - crateAABB.y,systems.height - 55 - crateAABB.x)
+        end
+
+    end
+
+    setColor(1,0,0,1)
+    love.graphics.draw(systems.sprites["arrow"],systems.width - 200,systems.height - 55,systems.playerCrateRotation,3,3,8,8)
+    setColor(1,1,1,1)
+
 end
 
 return systems

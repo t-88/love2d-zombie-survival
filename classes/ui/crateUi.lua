@@ -7,8 +7,9 @@ function CrateUI:new(offset,obj)
     self.__index = self
 
     self.items = {}
-self.offset = offset or {x = 0,y = 0}
+    self.offset = offset or {x = 0,y = 0}
     self.visible = false
+
 
     return deepcopy(obj)
 end
@@ -32,7 +33,13 @@ end
 function CrateUI:update(systems)
     if love.mouse.isDown(1) then
         for  i = #self.items , 1 , -1 do 
-            if AABB(systems.mouse.aabb  ,self.items[i].aabb)   then
+            local mouseWithOffset = {
+                x = systems.mouse.aabb.x - systems.offset.x,
+                y = systems.mouse.aabb.y - systems.offset.y,
+                w = systems.mouse.aabb.w,
+                h = systems.mouse.aabb.h,
+            }
+            if AABB(mouseWithOffset  ,self.items[i].aabb)   then
                 if self.items[i].onSelecte() then
                     table.remove(self.items,i)
                 end
@@ -43,21 +50,30 @@ end
 
 function CrateUI:render(systems)
     if not self.visible then return end
+    love.graphics.push()
+    love.graphics.translate(systems.offset.x,systems.offset.y)
+
     drawRect("fill",self.offset.x,self.offset.y,15 + 50 * 2,15 + 50 * 2)
     setColor(1,0,0,1)
     for index , item in pairs(  self.items) do 
         local indexx = index - 1
         drawRect("fill",
-            item.aabb.x  ,
-            item.aabb.y ,
+            item.aabb.x,
+            item.aabb.y,
             50 ,
             50
         )
         love.graphics.draw(systems.sprites[item.spriteID],item.aabb.x,item.aabb.y ,0 , 1.5 , 1.5)
     end 
     setColor(1,1,1,1)
+
     
+
+    love.graphics.pop()
+
 end
+
+
 
 
 

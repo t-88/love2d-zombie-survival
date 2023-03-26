@@ -49,6 +49,9 @@ function ShootGun:new(obj)
 end
 
 function ShootGun:shoot(player)
+    if player.isInCrate then return end 
+
+
     if not self.used and self.currAmmo == 0 and not self.reload then
         self.reload = true 
     end 

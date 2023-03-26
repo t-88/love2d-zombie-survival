@@ -26,6 +26,8 @@ function Crate:new(x,y,obj)
     self.minScale = 2.8
     self.scale = self.maxScale
 
+    self.empty = false
+
     self.origin = {
         x = 10,
         y = 10,
@@ -36,6 +38,7 @@ function Crate:new(x,y,obj)
     self.isOpen = false
     self.isOnTheGround = false
     self.renderIndex = 0
+    self.zIndex = 1
     return deepcopy(obj)
 end
 function Crate:update(systems)
@@ -43,8 +46,19 @@ function Crate:update(systems)
     else  
         self.scale = self.minScale
         self.isOnTheGround = true
+        self.zIndex = -1
     end
 
+    
+    if self.empty then
+        self.spriteName = "crate"
+        self.isOpen = false
+        self.crateUi.visible = false
+        systems.player.isInCrate = false
+        return
+    end 
+
+    if not self.isOnTheGround then return end
 
     local entity2 = {   
         x = systems.player.aabb.x + systems.offset.x,
@@ -71,6 +85,7 @@ function Crate:update(systems)
             systems.player.isInCrate = false
         end
     end
+
 
 end
 

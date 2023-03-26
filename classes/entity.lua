@@ -22,6 +22,8 @@ function Entity:new(obj)
         y= 0,
     }
 
+    self.zIndex = 0
+    self.rotationOffset = 0
     return deepcopy(obj)
 end
 

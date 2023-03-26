@@ -45,6 +45,8 @@ function Rifle:new(obj)
 end
 
 function Rifle:shoot(player)
+    if player.isInCrate then return end 
+
     if not self.used then
         self.bullet.aabb.x = player.aabb.x + 10 + 20 * math.cos(player.rotation)
         self.bullet.aabb.y = player.aabb.y + 10 + 20 *  math.sin(player.rotation)

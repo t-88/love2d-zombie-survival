@@ -23,8 +23,11 @@ end
     self.systems = systems
 end
 function UiManager:update()
-    for _ , child in pairs(self.children) do 
-        child:update(self.systems)
+    for i = #self.children , 1 , -1 do 
+        self.children[i]:update(self.systems)
+        if self.children[i].dead then
+            table.remove(self.children,i)    
+        end
     end
 end
 

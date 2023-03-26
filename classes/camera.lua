@@ -25,6 +25,7 @@ end
 
 function Camera:setSystems(systems)
     self.systems = systems 
+    self:addSprite(systems.player)
 end
 
 function Camera:addSprite(sprite)
@@ -56,8 +57,6 @@ function Camera:update(target)
             self.offset.y = self.savedOffset.y
         end
     end 
-
-    
         if target.aabb.x > self.bounderies.left then
             if target.aabb.x + self.offset.x < self.smallRect.x then
                 self.offset.x = self.smallRect.x - target.aabb.x 
@@ -89,6 +88,19 @@ function Camera:update(target)
         end
     end
 
+    for i = 1 , #self.sprites do
+        local isOver = true
+        for j = 1 , #self.sprites - i  do
+            if self.sprites[j].zIndex > self.sprites[j+1].zIndex then
+                local tmp = self.sprites[j]
+                self.sprites[j] = self.sprites[j + 1]
+                self.sprites[j + 1] = tmp
+                isOver = false
+                print(self.sprites[j].spriteName)
+            end 
+        end
+    end
+
 end
 
 
@@ -98,15 +110,12 @@ function Camera:render(target)
     
 
     love.graphics.push()
-    love.graphics.translate(self.offset.x,self.offset.y)
-
-
-
-    love.graphics.draw(self.systems.sprites[self.background.spriteName],self.background.aabb.x,self.background.aabb.y,self.background.rotation,self.background.scale,self.background.scale)
-    target:render()
-    for _ , sprite in pairs(self.sprites) do
-        love.graphics.draw(self.systems.sprites[sprite.spriteName],sprite.aabb.x + sprite.offset.x,sprite.aabb.y  + sprite.offset.y,sprite.rotation,sprite.scale,sprite.scale,sprite.origin.x,sprite.origin.y)
-    end
+        love.graphics.translate(self.offset.x,self.offset.y)
+    
+        love.graphics.draw(self.systems.sprites[self.background.spriteName],self.background.aabb.x,self.background.aabb.y,self.background.rotation,self.background.scale,self.background.scale)
+        for _ , sprite in pairs(self.sprites) do
+            love.graphics.draw(self.systems.sprites[sprite.spriteName],sprite.aabb.x + sprite.offset.x,sprite.aabb.y  + sprite.offset.y,sprite.rotation + sprite.rotationOffset,sprite.scale,sprite.scale,sprite.origin.x,sprite.origin.y)
+        end
 
 
     love.graphics.pop()

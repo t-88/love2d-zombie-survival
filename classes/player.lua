@@ -17,6 +17,7 @@ function Player:new(obj)
     self.health = 10
     self.isInCrate = false
 
+    self.spriteName = "player"
 
     self.shootEffect = {
         timer = 0,
@@ -26,7 +27,13 @@ function Player:new(obj)
         color = {1,1,1},
         alive = 0,
     }
-    
+
+    self.scale = 3
+    self.origin = {
+        x = 14,
+        y = 20
+    }
+    self.rotationOffset = 3.14 / 2    
     self.raduis = 20
     return deepcopy(obj)
 end
