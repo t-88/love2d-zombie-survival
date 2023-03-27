@@ -14,7 +14,7 @@ function UiManager:new(obj)
 
 
     self.gunsUi = {
-        shootgun = {
+        shotgun = {
             scale = 3.2 , 
             x = 125,
             y = 100,
@@ -100,10 +100,13 @@ function UiManager:render()
         love.graphics.draw(self.systems.sprites[primaryWeapon.spriteName],self.systems.width - self.gunsUi[primaryWeapon.spriteName].x,self.systems.height - self.gunsUi[primaryWeapon.spriteName].y,0, self.gunsUi[primaryWeapon.spriteName].scale)
         
         setColor(1,1,1)
-        love.graphics.print(primaryWeapon.ammo,self.systems.width - 125,self.systems.height - 30)
-        self.gunsUi[primaryWeapon.spriteName].drawAmmo(self.systems.width - 140,self.systems.height - 20,primaryWeapon.currAmmo)
+        if primaryWeapon.ammo >= 0 then
+            love.graphics.print(primaryWeapon.ammo,self.systems.width - 125,self.systems.height - 30,0,0.5,0.5)
+            self.gunsUi[primaryWeapon.spriteName].drawAmmo(self.systems.width - 140,self.systems.height - 20,primaryWeapon.currAmmo)
+        end
     end
     if secondWeapon then
+        setColor(1,1,1,1)
         love.graphics.draw(self.systems.sprites[secondWeapon.spriteName],self.systems.width - self.gunsUi[secondWeapon.spriteName].x  + 15,self.systems.height - self.gunsUi[secondWeapon.spriteName].y - 55,0, self.gunsUi[secondWeapon.spriteName].scale- 1)
     end
 
@@ -120,9 +123,8 @@ function UiManager:render()
     )
     setColor(1,1,1,1)
 
-
-
-
+    love.graphics.print(self.systems.zombieManager.killedZombieCount,self.systems.width/2 - 40,10,0,0.8,0.8)
+    love.graphics.print(self.systems.maxCrateTime - math.floor(self.systems.nextCrateTime),self.systems.width/2 + 40,10,0,0.8,0.8)
 
 end
 

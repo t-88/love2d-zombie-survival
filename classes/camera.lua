@@ -98,7 +98,6 @@ function Camera:update(target)
                 self.sprites[j] = self.sprites[j + 1]
                 self.sprites[j + 1] = tmp
                 isOver = false
-                print(self.sprites[j].spriteName)
             end 
         end
     end

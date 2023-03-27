@@ -23,7 +23,7 @@ function CrateUI:addItem(item)
             y = math.floor(#self.items / 2) * 50  + 5 * (math.floor(#self.items / 2) + 1) + self.offset.y,
             w = 50,
             h = 50,
-        }
+        },
     }
 
     table.insert(self.items,crateItem)
@@ -31,6 +31,8 @@ end
 
 
 function CrateUI:update(systems)
+    if not self.visible then return end
+
     if love.mouse.isDown(1) then
         for  i = #self.items , 1 , -1 do 
             local mouseWithOffset = {
@@ -53,17 +55,20 @@ function CrateUI:render(systems)
     love.graphics.push()
     love.graphics.translate(systems.camera.offset.x,systems.camera.offset.y)
 
-    drawRect("fill",self.offset.x,self.offset.y,15 + 50 * 2,15 + 50 * 2)
-    setColor(1,0,0,1)
-    for index , item in pairs(  self.items) do 
-        local indexx = index - 1
+    setColor(0,0,0,0.6)
+    drawRect("fill",self.offset.x,self.offset.y,15 + 50 * 2,15 + 50 * 2 , 5)
+    for index , item in pairs(self.items) do 
+        setColor(1,1,1,0.5)
+        -- local indexx = index - 1
         drawRect("fill",
-            item.aabb.x,
+            item.aabb.x + 5,
             item.aabb.y,
-            50 ,
-            50
+            50,
+            50,
+            5
         )
-        love.graphics.draw(systems.sprites[item.spriteID],item.aabb.x,item.aabb.y ,0 , 1.5 , 1.5)
+        setColor(1,1,1,1)
+        love.graphics.draw(systems.sprites[item.spriteID],item.aabb.x + 5,item.aabb.y ,0 , 1.5 , 1.54)
     end 
     setColor(1,1,1,1)
 

@@ -20,14 +20,6 @@ function Zombie:new(obj)
     self.attackDelay = 0.1
     self.attackTimer = 0
 
-    self.systems = nil
-
-    self.allStates = {
-        fellow = 'fellow',
-        attack = 'attack',
-        notActive =  'not-active',
-    }
-    self.state = 'fellow' 
     self.spriteInfo = {}
 
     self.spriteName = "zombie"
@@ -64,37 +56,14 @@ function Zombie:fellowTarget(target)
 
     self.vel = {x = 0 , y  = 0}
 end
-function Zombie:update(target) 
+function Zombie:update(target,sounds) 
     if self.health <= 0 then
         self.dead = true
+        return
     end
 
-
-    if self.state == self.allStates.notActive then
-        local distance = (self:getCenterOfRect().x - target.aabb.x) * (self:getCenterOfRect().x - target.aabb.x) + (self:getCenterOfRect().y - target.aabb.y) * (self:getCenterOfRect().y - target.aabb.y) 
-        if distance <= self.detectRaduis * self.detectRaduis then
-            self.state = self.allStates.fellow
-        end
-    elseif self.state == self.allStates.fellow then
-        local distance = (self:getCenterOfRect().x - target.aabb.x) * (self:getCenterOfRect().x - target.aabb.x) + (self:getCenterOfRect().y - target.aabb.y) * (self:getCenterOfRect().y - target.aabb.y) 
-        self:fellowTarget(target)
-        if distance <= self.attackRaduis * self.attackRaduis then
-            self.state = self.allStates.attack
-        end
-    elseif self.state == self.allStates.attack then
-        self.attackTimer = self.attackTimer  + love.timer.getDelta()
-        if self.attackTimer > self.attackDelay then
-            if target.spriteName ~= "lightBomb"  then
-                target:takeDamage(2)
-                self.attackTimer = 0
-                self.state = self.allStates.fellow
-            end 
-        end 
-    end
-
+    self:fellowTarget(target)
     
-
-    ::end_state_machine::
 end
 
 

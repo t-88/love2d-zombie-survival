@@ -17,6 +17,7 @@ function Bullet:new(obj)
 
     self.spriteName = "bulletDefault"
     self.scale = 3
+    self.kill = true
 
     self.raduis = 20
     self.origin = {

@@ -31,19 +31,30 @@ function Weapon:reload()
         self.haveToReload = true
     end
 
-    if self.haveToReload then
+
+    
+
+    if self.haveToReload and self.ammo > 0 then
+        if self.reloadTime == self.reloadDelay then
+            self.sounds[self.reloadSoundEffect]:play()
+        end
+
+
         self.reloadTime = self.reloadTime - love.timer.getDelta()
         if self.reloadTime < 0 then
+
             self.haveToReload = false
             self.reloadTime = self.reloadDelay
 
-            if self.ammo+ self.currAmmo >= self.maxCurrAmmo then
+            if self.ammo + self.currAmmo >= self.maxCurrAmmo then
                 self.ammo = self.ammo - self.maxCurrAmmo + self.currAmmo 
                 self.currAmmo = self.maxCurrAmmo
             else 
                 self.currAmmo = self.currAmmo + self.ammo 
                 self.ammo = 0 
             end
+
+
             
         end
     end

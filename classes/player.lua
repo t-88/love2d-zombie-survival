@@ -10,8 +10,6 @@ function Player:new(obj)
     self.__index = self
 
     self.speed = 200
-    self.aabb.x = 400
-    self.aabb.y = 400
     self.rotation = 0
     self.bullets = {}
     self.health = 100
@@ -41,21 +39,26 @@ end
 
 function Player:takeDamage(damage) 
     self.health = self.health - damage
-    print("player took",damage,"damage") 
+
+    systems.sounds["zombieSound"]:play()
+
 end
 
 function Player:onBulletHitZombie(bullet , zombie)  
-    for i = 1 , #self.bullets do
-        if bullet == self.bullets[i] then
-            bullet.dead = true
-            table.remove(self.bullets,i)
-            break
-        end
-    end 
+    -- for i = 1 , #self.bullets do
+    --     if bullet == self.bullets[i] then
+    --         bullet.dead = true
+    --         table.remove(self.bullets,i)
+    --         break
+    --     end
+    -- end 
 
     zombie.health = zombie.health - math.abs(bullet:getDamage())
-    bullet.dead = true
-    print('zombie health:',zombie.health, 'bullet damage',bullet:getDamage())
+    systems.sounds["bulletHit"]:play()
+
+    if bullet.kill then
+        bullet.dead = true
+    end
 end
 function Player:addShootEffect(shootEffect)
     self.shootEffect.timer = shootEffect.timer
@@ -112,6 +115,21 @@ function Player:move()
 
     self.aabb.x = self.aabb.x + self.vel.x * love.timer.getDelta()
     self.aabb.y = self.aabb.y + self.vel.y * love.timer.getDelta()
+
+
+    if self.aabb.x > systems.fullWidth + 125 then
+        self.aabb.x = systems.fullWidth + 125
+    end
+    if self.aabb.x < 10 then
+        self.aabb.x = 10
+    end
+    if self.aabb.y < 10 then
+        self.aabb.y = 10
+    end
+    if self.aabb.y > systems.fullHeight + 65 then
+        self.aabb.y = systems.fullHeight + 65
+    end
+
 
     self.vel = {x = 0 , y = 0}
 end

@@ -78,7 +78,7 @@ function Crate:update(systems)
     } 
     if circleToCircle(entity1,entity2) then
         self.spriteName = "crateOutlined"
-        if not self.isOpen and love.keyboard.isDown("e") then
+        if not self.isOpen and love.keyboard.isDown("e") and not self.player.isInCrate then
             self.isOpen = true
             self.crateUi.visible = true
             self.player.isInCrate = true

@@ -1,7 +1,7 @@
 require "utils"
 local Drop = require "./classes/drop"
 local Rifle = require "./classes/weapons/rifle"
-local Shootgun = require "./classes/weapons/shootgun"
+local Shotgun = require "./classes/weapons/shotgun"
 local Pistol = require "./classes/weapons/pistol"
 local LightBomb = require "./classes/weapons/lightBomb"
 
@@ -12,12 +12,14 @@ function WeaponManager:new(obj)
     self.__index = self
     
     self.player = nil
-    self.weapons = {Pistol:new()}
+    self.weapons = {}
+
+    
 
     self.weaponChanged = false
     self.weaponeDroped = false
     self.pickedAWeapon = false
-
+    
     self.drops = {}
     self.lightBombs = {}
 
@@ -25,7 +27,7 @@ function WeaponManager:new(obj)
 end
 
 
-function WeaponManager:init(player,sprites,camera,width,height)
+function WeaponManager:init(player,sprites,camera,width,height,sounds)
     self.currWeaponAABB = {}
     self.currWeaponAABB.w = 120
     self.currWeaponAABB.h = 80
@@ -42,18 +44,21 @@ function WeaponManager:init(player,sprites,camera,width,height)
     self.player = player
     self.sprites = sprites
     self.camera = camera
+    self.sounds = sounds
 end
 
 
 function WeaponManager:addWeapon(weapon)
     weapon.player = self.player
+    weapon.sounds = self.sounds
+
     table.insert(self.weapons,weapon)
 end
 
 function WeaponManager:update()
     if #self.weapons == 0 then goto skip_weapon_update end
 
-    self.weapons[1]:update(self.player)
+    self.weapons[1]:update(self.player,self.sounds)
 
     if #self.weapons == 2 then
         if love.keyboard.isDown('2') and not self.weaponChanged then
@@ -120,43 +125,6 @@ function WeaponManager:update()
         if self.lightBombs[i].empty then table.remove(self.lightBombs,i) end
     end
 end
-
-function WeaponManager:render()
-
-    -- setColor(0,0,1,1)
-    -- drawRect('fill',self.currWeaponAABB.x, self.currWeaponAABB.y, self.currWeaponAABB.w , self.currWeaponAABB.h,5)
-    -- setColor(1,1,1,1)
-
-    -- setColor(1,0,1,1)
-    -- drawRect('fill',self.secondWeaponAABB.x, self.secondWeaponAABB.y, self.secondWeaponAABB.w , self.secondWeaponAABB.h,5)
-    -- setColor(1,1,1,1)
-    -- if #self.weapons ~= 0 then 
-    --     self.weapons[1]:render(self.player)
-
-    --     love.graphics.push()
-    --         love.graphics.translate(self.currWeaponAABB.x + 5, self.currWeaponAABB.y - 15)
-    --         love.graphics.scale(3.5, 3.5)
-    --         love.graphics.draw(self.sprites[self.weapons[1].spriteName])
-    --     love.graphics.pop()
-    
-    --     if #self.weapons >= 2  then
-    --         love.graphics.push()
-    --             love.graphics.translate(self.secondWeaponAABB.x + 10, self.secondWeaponAABB.y - 10)
-    --             love.graphics.scale(2.5, 2.5)
-    --             love.graphics.draw(self.sprites[self.weapons[2].spriteName])
-    --         love.graphics.pop()
-    --     end
-
-    --     love.graphics.print(self.weapons[1].ammo,self.currWeaponAABB.x + self.currWeaponAABB.w - 20 ,self.currWeaponAABB.y)
-    --     love.graphics.print(self.weapons[1].currAmmo,self.currWeaponAABB.x ,self.currWeaponAABB.y)
-
-    -- end
-
-    -- for _ , drop in pairs(self.drops) do 
-    --     drop:render()
-    -- end
-end
-
 
 
 return WeaponManager

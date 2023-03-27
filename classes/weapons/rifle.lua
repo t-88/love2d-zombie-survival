@@ -19,11 +19,11 @@ function Rifle:new(obj)
 
     self.bullet.speed = 1800
     self.bullet.lifeSpan = 0.8
-    self.bullet.damage = 2
+    self.bullet.damage = 3.5
     self.bullet.aabb.w = 10
     self.bullet.aabb.h = 10
 
-    self.ammo = 100
+    self.ammo = 120
     self.currAmmo = 30
     self.maxCurrAmmo = 30
 
@@ -43,18 +43,22 @@ function Rifle:new(obj)
     self.scale = 1.5
 
     self.spriteName = "rifle"
+    self.reloadSoundEffect =  "rifleReload"
+
 
 
 
     return deepcopy(obj)
 end
 
-function Rifle:shoot(player)
+function Rifle:shoot(player,sounds)
     if player.isInCrate then return end 
     if not self.used and self.currAmmo == 0 and not self.haveToReload then self.haveToReload = true  end
 
     if not self.used and self.currAmmo > 0 and not self.haveToReload then
         self.currAmmo =  self.currAmmo - 1
+        sounds["rifleShot"]:play() 
+
 
         self.bullet.aabb.x = player.aabb.x + 10 + 20 * math.cos(player.rotation)
         self.bullet.aabb.y = player.aabb.y + 10 + 20 *  math.sin(player.rotation)
@@ -80,9 +84,9 @@ function Rifle:shoot(player)
 
 end
 
-function Rifle:update(player)
+function Rifle:update(player,sounds)
     if love.mouse.isDown(1) then
-        self:shoot(player)
+        self:shoot(player,sounds )
     elseif not love.mouse.isDown(1) then
         self.spread = math.max(self.initSpread,self.spread - 0.03)
 

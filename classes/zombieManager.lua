@@ -1,5 +1,6 @@
 require "utils"
 local Zombie = require "./classes/zombie"
+local Entity = require "./classes/entity"
 
 local ZombieManager = {}
 function ZombieManager:new(obj)
@@ -7,8 +8,12 @@ function ZombieManager:new(obj)
     setmetatable(obj,self)
     self.__index = self
     
-    self.zombies = {}
-    self.player = {}
+
+    self.currLvl = 1
+    self.spawnDelay = 1
+    self.spawnTimer = 1
+    self.maxLvl = 4
+    self.killedZombieCount = 0 
 
     return deepcopy(obj)
 end
@@ -17,6 +22,20 @@ end
 function ZombieManager:setSystems(systems)
     self.systems = systems
 end
+
+function ZombieManager:init()
+    self.currLvl = 1
+    self.zombies = {}
+    self.killedZombieCount = 0 
+
+    self.lvls = {
+        {time = 1 * 60,maxZs = 3},
+        {time = 2 * 60,maxZs = 10},
+        {time = 5 * 60,maxZs = 12},
+        {time = 1 * 60,maxZs = 16},
+    }
+end
+
 
 function ZombieManager:addZombie(zombie)
     self.systems.collistionManager:addCircleCollistion(
@@ -40,9 +59,57 @@ function ZombieManager:addZombie(zombie)
     self.systems.camera:addSprite(zombie )
 end
 
+
+function ZombieManager:spawnZombie()
+    self.spawnTimer =  self.spawnTimer - love.timer.getDelta() 
+
+
+    if self.spawnTimer < 0 and #self.zombies < self.lvls[self.currLvl].maxZs then 
+        self.spawnTimer = self.spawnDelay
+
+        local zombie = Zombie:new()
+
+        if love.math.random(0,1) == 0 then
+            zombie.aabb.x = love.math.random(-400,self.systems.width + 400) - self.systems.camera.offset.x 
+            zombie.aabb.y = love.math.random(0,1) * self.systems.height - self.systems.camera.offset.y 
+        else 
+            zombie.aabb.x = love.math.random(0,1) * self.systems.width - self.systems.camera.offset.x 
+            zombie.aabb.y = love.math.random(-400,self.systems.height + 400) - self.systems.camera.offset.y 
+        end
+
+        self.systems.zombieManager:addZombie(zombie)
+        self.systems.camera:addSprite(zombie)
+    end
+
+    if self.currLvl ~= self.maxLvl then
+        self.lvls[self.currLvl].time = self.lvls[self.currLvl].time - love.timer.getDelta()  
+        if self.lvls[self.currLvl].time < 0 then
+            self.currLvl = self.currLvl + 1
+            print(self.currLvl)
+        end 
+    end 
+
+end
+
 function ZombieManager:update() 
     for i = #self.zombies , 1 , -1  do
-        if self.zombies[i].dead then table.remove(self.zombies,i) end
+        if self.zombies[i].dead then 
+
+
+            local body = Entity:new()
+            body.aabb.x = self.zombies[i].aabb.x; body.aabb.y = self.zombies[i].aabb.y
+            body.rotation = self.zombies[i].rotation + 3.14/2
+            body.origin = {x = 16 , y = 16}
+            body.spriteName = "zombieBody"..love.math.random(1,4)
+            body.scale = 3.2
+            body.zIndex = -5
+            self.systems.camera:addSprite(body)
+            
+            table.remove(self.zombies,i)
+            self.killedZombieCount = self.killedZombieCount + 1
+
+            goto skip_dead_zombie_update
+        end
         
         local inRangeWithLightBomb  = false
         local zombieCircle = {x = self.zombies[i].aabb.x ,y = self.zombies[i].aabb.y ,raduis = self.zombies[i].raduis}
@@ -50,14 +117,18 @@ function ZombieManager:update()
             local lightBombCircle = {x = lightBomb.aabb.x ,y = lightBomb.aabb.y ,raduis = lightBomb.raduis}
 
             if circleToCircle(lightBombCircle,zombieCircle) then
-                inRangeWithLightBomb = true
-                    self.zombies[i]:update(lightBomb)
+                    inRangeWithLightBomb = true
+                    self.zombies[i]:update(lightBomb,self.systems.sounds)
                 break
             end
         end
-        if not inRangeWithLightBomb then self.zombies[i]:update(self.systems.player) end
+        if not inRangeWithLightBomb then self.zombies[i]:update(self.systems.player,self.systems.sounds) end
         
+
+
+        ::skip_dead_zombie_update::
     end
+    self:spawnZombie()
 end
 
 function ZombieManager:render() 

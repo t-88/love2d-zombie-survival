@@ -25,6 +25,8 @@ function lightBomb:new(obj)
     }
     self.intensity = 35
 
+    self.ammo = -1
+
     self.spriteName = "lightBomb"
     self.raduis = 200
 
