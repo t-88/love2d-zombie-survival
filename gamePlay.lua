@@ -23,7 +23,7 @@ function GamePlay:init()
 
 
 
-    self.systems.player.health = 100
+    self.systems.player.health = 20
     self.systems.player.aabb.x = 400
     self.systems.player.aabb.y = 400 
 

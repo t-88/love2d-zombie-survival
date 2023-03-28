@@ -54,7 +54,7 @@ function Crate:update(systems)
         self.zIndex = -1
     end
 
-    if self.crateUi.items == 0 then self.empty = true end
+    if #self.crateUi.items == 0 then self.empty = true end
     
     if self.empty then
         self.spriteName = "crate"

@@ -12,7 +12,7 @@ function Player:new(obj)
     self.speed = 200
     self.rotation = 0
     self.bullets = {}
-    self.health = 100
+    self.health = 20
     self.isInCrate = false
 
     self.spriteName = "player"
@@ -45,14 +45,6 @@ function Player:takeDamage(damage)
 end
 
 function Player:onBulletHitZombie(bullet , zombie)  
-    -- for i = 1 , #self.bullets do
-    --     if bullet == self.bullets[i] then
-    --         bullet.dead = true
-    --         table.remove(self.bullets,i)
-    --         break
-    --     end
-    -- end 
-
     zombie.health = zombie.health - math.abs(bullet:getDamage())
     systems.sounds["bulletHit"]:play()
 

@@ -12,7 +12,7 @@ function ZombieManager:new(obj)
     self.currLvl = 1
     self.spawnDelay = 1
     self.spawnTimer = 1
-    self.maxLvl = 4
+    self.maxLvl = 6
     self.killedZombieCount = 0 
 
     return deepcopy(obj)
@@ -29,10 +29,12 @@ function ZombieManager:init()
     self.killedZombieCount = 0 
 
     self.lvls = {
-        {time = 1 * 60,maxZs = 3},
-        {time = 2 * 60,maxZs = 10},
-        {time = 5 * 60,maxZs = 12},
-        {time = 1 * 60,maxZs = 16},
+        {time = 1 * 20,maxZs = 3},
+        {time = 1 * 60,maxZs = 10},
+        {time = 2 * 60,maxZs = 20},
+        {time = 3 * 60,maxZs = 30},
+        {time = 5 * 60,maxZs = 35},
+        {time = 5 * 60,maxZs = 40},
     }
 end
 
@@ -43,8 +45,8 @@ function ZombieManager:addZombie(zombie)
             self.systems.player,
             function() self.systems.player:takeDamage(1) end,
             nil,
-            20,
-            10
+            10,
+            15
         )
     for _ , otherZombie in pairs(self.zombies) do 
         self.systems.collistionManager:addCircleCollistion(
@@ -83,9 +85,9 @@ function ZombieManager:spawnZombie()
 
     if self.currLvl ~= self.maxLvl then
         self.lvls[self.currLvl].time = self.lvls[self.currLvl].time - love.timer.getDelta()  
+
         if self.lvls[self.currLvl].time < 0 then
             self.currLvl = self.currLvl + 1
-            print(self.currLvl)
         end 
     end 
 

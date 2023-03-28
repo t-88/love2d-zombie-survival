@@ -99,7 +99,7 @@ function WeaponManager:update()
                 table.remove(self.weapons,1),
                 self.camera.offset,
                 function() 
-                    if love.keyboard.isDown("e") and not self.pickedAWeapon then
+                    if love.keyboard.isDown("e") and not self.pickedAWeapon and #self.weapons < 2 then
                         self.pickedAWeapon = true
                         table.insert(self.weapons,drop.entity)
                         drop.dead = true

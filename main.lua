@@ -10,6 +10,8 @@ local gameStateManager
 
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
+    love.window.setTitle("Zombie Survival")
+
     
     player = Player:new()
     systems.init(player)

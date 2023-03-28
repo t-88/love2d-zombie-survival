@@ -115,9 +115,9 @@ function UiManager:render()
     drawRect('line',self.systems.width - 210,10,200,20,5)
     setColor(1,0,0,0.8)
     drawRect('fill',
-             self.systems.width - 210+ map(self.systems.player.health,0,100,200,0),
+             self.systems.width - 210+ map(self.systems.player.health,0,20,200,0),
              10,
-             map(self.systems.player.health,0,100,0,200),
+             map(self.systems.player.health,0,20,0,200),
              20,
              5
     )

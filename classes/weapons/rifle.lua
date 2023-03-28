@@ -55,7 +55,7 @@ function Rifle:shoot(player,sounds)
     if player.isInCrate then return end 
     if not self.used and self.currAmmo == 0 and not self.haveToReload then self.haveToReload = true  end
 
-    if not self.used and self.currAmmo > 0 and not self.haveToReload then
+    if not self.used and self.currAmmo > 0 then
         self.currAmmo =  self.currAmmo - 1
         sounds["rifleShot"]:play() 
 
