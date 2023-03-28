@@ -15,6 +15,6 @@
 - check this github page u should find files to download for windows and linux
 
 # Imgs
-![Main Menu](https://github.com/t-88/love2d-zombie-survival/blob/master/Imags/mainMenu.png "Main Menu")
-![Game Play](https://github.com/t-88/love2d-zombie-survival/blob/master/Imags/gamePlay.png "Game Play")
+![Main Menu](https://github.com/t-88/love2d-zombie-survival/blob/master/Imgs/mainMenu.png "Main Menu")
+![Game Play](https://github.com/t-88/love2d-zombie-survival/blob/master/Imgs/gamePlay.png "Game Play")
 ![Game Over](https://github.com/t-88/love2d-zombie-survival/blob/master/Imgs/gameOver.png "Game Over")
