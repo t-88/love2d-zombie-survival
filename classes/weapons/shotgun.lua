@@ -57,6 +57,7 @@ function ShotGun:shoot(player,sounds)
 
 
     if not self.used and self.currAmmo == 0 and not self.reload then self.reload = true  end
+    if not self.used and self.currAmmo == 0 and not self.haveToReload then self.haveToReload = true  end
     
     
     if not self.used and self.currAmmo > 0 then

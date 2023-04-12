@@ -23,6 +23,16 @@ end
 function GameStateManager:changeState(state)
     self.currState = state
     love.mouse.setCursor()
+
+    for k,v in pairs(self.systems.zombieManager.zombies) do 
+        self.systems.zombieManager.zombies[k].dead = true
+        table.remove(self.systems.zombieManager.zombies, k)
+    end    
+    for k,v in pairs(self.systems.crateManager.crates) do 
+        self.systems.crateManager.crates[k].dead = true
+        table.remove(self.systems.crateManager.crates, k)
+    end        
+
     self.states[self.currState]:init()
 end
 

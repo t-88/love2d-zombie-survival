@@ -18,7 +18,11 @@ function GamePlay:new(systems,shaders,changeState,obj)
 end
 
 function GamePlay:init()
-    self.systems.camera.sprites = {}
+    if self.systems.camera.sprites then
+        for k,v in pairs(self.systems.camera.sprites) do 
+            table.remove(self.systems.camera.sprites, k)
+        end    
+    end    
     self.systems.camera:init(self.systems)
 
 
@@ -28,13 +32,25 @@ function GamePlay:init()
     self.systems.player.aabb.y = 400 
 
 
-    self.systems.crateManager.crates = {}   
+    for k,v in pairs(self.systems.crateManager.crates) do 
+        table.remove(self.systems.crateManager.crates, k)
+    end    
+
     self.systems.crateManager:init(self.systems.player,self.systems.camera,self.systems.uiManager,self.systems.items)
     self.systems.crateManager:spawnACrate(300,300,true)
 
 
 
+
     self.systems.zombieManager:init()   
+    if self.systems.zombieManager.zombieManager then
+        for k,v in pairs(self.systems.zombieManager.zombies) do 
+            self.systems.zombieManager.zombies[k].dead = true
+            table.remove(self.systems.zombieManager.zombies, k)
+        end    
+    end    
+
+    self.systems.zombieManager.zombies = {}
     self.systems.nextCrateTime = 0
 
     self.systems.sounds["assault"]:play()
@@ -73,7 +89,7 @@ function GamePlay:setLightSources()
     self.shaders.addLightSource(
         {x = self.systems.player.aabb.x + self.systems.camera.offset.x,y = self.systems.player.aabb.y + self.systems.camera.offset.y},
         {1,1,1},
-        30
+        20
     )
 
     for _ , bullet in pairs(self.systems.bulletManager.bullets) do

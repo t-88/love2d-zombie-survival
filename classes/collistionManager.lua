@@ -107,7 +107,6 @@ function CollistionManager:update()
         if  collided then
             self.onCircleCollistionStatic[i].entity2.aabb.x = self.onCircleCollistionStatic[i].entity2.aabb.x + collistionResponse.depth * collistionResponse.normal.x  
             self.onCircleCollistionStatic[i].entity2.aabb.y = self.onCircleCollistionStatic[i].entity2.aabb.y + collistionResponse.depth * collistionResponse.normal.y  
-
         end
         
     

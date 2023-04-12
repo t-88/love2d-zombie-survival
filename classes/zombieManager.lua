@@ -15,6 +15,8 @@ function ZombieManager:new(obj)
     self.maxLvl = 6
     self.killedZombieCount = 0 
 
+    self.zombies = {}
+
     return deepcopy(obj)
 end
  
@@ -25,7 +27,6 @@ end
 
 function ZombieManager:init()
     self.currLvl = 1
-    self.zombies = {}
     self.killedZombieCount = 0 
 
     self.lvls = {

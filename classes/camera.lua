@@ -112,8 +112,10 @@ function Camera:render(target)
     
         love.graphics.draw(self.systems.sprites[self.background.spriteName],self.background.aabb.x,self.background.aabb.y,self.background.rotation,self.background.scale,self.background.scale)
         for _ , sprite in pairs(self.sprites) do
-            love.graphics.draw(self.systems.sprites[sprite.spriteName],sprite.aabb.x ,sprite.aabb.y  ,sprite.rotation + sprite.rotationOffset,sprite.scale,sprite.scale,sprite.origin.x,sprite.origin.y)
-        end
+            if not sprite.dead then
+                love.graphics.draw(self.systems.sprites[sprite.spriteName],sprite.aabb.x ,sprite.aabb.y  ,sprite.rotation + sprite.rotationOffset,sprite.scale,sprite.scale,sprite.origin.x,sprite.origin.y)
+            end
+        end 
     love.graphics.pop()
 end
 
